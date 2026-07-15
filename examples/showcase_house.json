@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0.0",
+  "model_id": "mdl_showcase_house",
+  "revision": 7,
+  "units": {
+    "length": "m",
+    "angle": "degree"
+  },
+  "coordinate_system": {
+    "type": "local_cartesian",
+    "handedness": "right",
+    "up_axis": "Z",
+    "origin": [0.0, 0.0, 0.0]
+  },
+  "geometry_settings": {
+    "linear_tolerance": 0.000001
+  },
+  "root_building_id": "bld_showcase_house",
+  "entities": {
+    "buildings": {
+      "bld_showcase_house": {
+        "id": "bld_showcase_house",
+        "entity_type": "building",
+        "name": "Courtyard Research House"
+      }
+    },
+    "floors": {
+      "flr_ground": {
+        "id": "flr_ground",
+        "entity_type": "floor",
+        "name": "Ground Floor",
+        "building_id": "bld_showcase_house",
+        "elevation": 0.0,
+        "height": 2.8
+      },
+      "flr_upper": {
+        "id": "flr_upper",
+        "entity_type": "floor",
+        "name": "Upper Floor",
+        "building_id": "bld_showcase_house",
+        "elevation": 3.2,
+        "height": 2.8
+      }
+    },
+    "rooms": {
+      "rom_ground_living": {
+        "id": "rom_ground_living",
+        "entity_type": "room",
+        "name": "Living Studio",
+        "floor_id": "flr_ground",
+        "usage": "living",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[0.1, 0.1], [7.9, 0.1], [7.9, 4.9], [0.1, 4.9], [0.1, 0.1]],
+          "holes": []
+        }
+      },
+      "rom_ground_kitchen": {
+        "id": "rom_ground_kitchen",
+        "entity_type": "room",
+        "name": "South Kitchen",
+        "floor_id": "flr_ground",
+        "usage": "kitchen",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[8.1, 0.1], [11.9, 0.1], [11.9, 4.9], [8.1, 4.9], [8.1, 0.1]],
+          "holes": []
+        }
+      },
+      "rom_ground_office": {
+        "id": "rom_ground_office",
+        "entity_type": "room",
+        "name": "Design Office",
+        "floor_id": "flr_ground",
+        "usage": "office",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[0.1, 5.1], [5.9, 5.1], [5.9, 7.9], [0.1, 7.9], [0.1, 5.1]],
+          "holes": []
+        }
+      },
+      "rom_ground_service": {
+        "id": "rom_ground_service",
+        "entity_type": "room",
+        "name": "Service Core",
+        "floor_id": "flr_ground",
+        "usage": "service",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[6.1, 5.1], [11.9, 5.1], [11.9, 7.9], [6.1, 7.9], [6.1, 5.1]],
+          "holes": []
+        }
+      },
+      "rom_upper_suite": {
+        "id": "rom_upper_suite",
+        "entity_type": "room",
+        "name": "Primary Suite",
+        "floor_id": "flr_upper",
+        "usage": "bedroom",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[0.1, 0.1], [5.9, 0.1], [5.9, 7.9], [0.1, 7.9], [0.1, 0.1]],
+          "holes": []
+        }
+      },
+      "rom_upper_bedroom": {
+        "id": "rom_upper_bedroom",
+        "entity_type": "room",
+        "name": "East Bedroom",
+        "floor_id": "flr_upper",
+        "usage": "bedroom",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[6.1, 0.1], [11.9, 0.1], [11.9, 4.9], [6.1, 4.9], [6.1, 0.1]],
+          "holes": []
+        }
+      },
+      "rom_upper_library": {
+        "id": "rom_upper_library",
+        "entity_type": "room",
+        "name": "North Library",
+        "floor_id": "flr_upper",
+        "usage": "study",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[6.1, 5.1], [11.9, 5.1], [11.9, 7.9], [6.1, 7.9], [6.1, 5.1]],
+          "holes": []
+        }
+      }
+    },
+    "walls": {
+      "wal_ground_south": {
+        "id": "wal_ground_south", "entity_type": "wall", "name": "Ground South Wall", "floor_id": "flr_ground",
+        "axis": {"type": "Segment2D", "start": [0.0, 0.0], "end": [12.0, 0.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_ground_east": {
+        "id": "wal_ground_east", "entity_type": "wall", "name": "Ground East Wall", "floor_id": "flr_ground",
+        "axis": {"type": "Segment2D", "start": [12.0, 0.0], "end": [12.0, 8.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_ground_north": {
+        "id": "wal_ground_north", "entity_type": "wall", "name": "Ground North Wall", "floor_id": "flr_ground",
+        "axis": {"type": "Segment2D", "start": [12.0, 8.0], "end": [0.0, 8.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_ground_west": {
+        "id": "wal_ground_west", "entity_type": "wall", "name": "Ground West Wall", "floor_id": "flr_ground",
+        "axis": {"type": "Segment2D", "start": [0.0, 8.0], "end": [0.0, 0.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_ground_split_east": {
+        "id": "wal_ground_split_east", "entity_type": "wall", "name": "Kitchen Divider", "floor_id": "flr_ground",
+        "axis": {"type": "Segment2D", "start": [8.0, 0.0], "end": [8.0, 5.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_ground_split_north": {
+        "id": "wal_ground_split_north", "entity_type": "wall", "name": "North Divider", "floor_id": "flr_ground",
+        "axis": {"type": "Segment2D", "start": [0.0, 5.0], "end": [12.0, 5.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_ground_service": {
+        "id": "wal_ground_service", "entity_type": "wall", "name": "Service Divider", "floor_id": "flr_ground",
+        "axis": {"type": "Segment2D", "start": [6.0, 5.0], "end": [6.0, 8.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_upper_south": {
+        "id": "wal_upper_south", "entity_type": "wall", "name": "Upper South Wall", "floor_id": "flr_upper",
+        "axis": {"type": "Segment2D", "start": [0.0, 0.0], "end": [12.0, 0.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_upper_east": {
+        "id": "wal_upper_east", "entity_type": "wall", "name": "Upper East Wall", "floor_id": "flr_upper",
+        "axis": {"type": "Segment2D", "start": [12.0, 0.0], "end": [12.0, 8.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_upper_north": {
+        "id": "wal_upper_north", "entity_type": "wall", "name": "Upper North Wall", "floor_id": "flr_upper",
+        "axis": {"type": "Segment2D", "start": [12.0, 8.0], "end": [0.0, 8.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_upper_west": {
+        "id": "wal_upper_west", "entity_type": "wall", "name": "Upper West Wall", "floor_id": "flr_upper",
+        "axis": {"type": "Segment2D", "start": [0.0, 8.0], "end": [0.0, 0.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_upper_split": {
+        "id": "wal_upper_split", "entity_type": "wall", "name": "Upper Suite Divider", "floor_id": "flr_upper",
+        "axis": {"type": "Segment2D", "start": [6.0, 0.0], "end": [6.0, 8.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      },
+      "wal_upper_library": {
+        "id": "wal_upper_library", "entity_type": "wall", "name": "Library Divider", "floor_id": "flr_upper",
+        "axis": {"type": "Segment2D", "start": [6.0, 5.0], "end": [12.0, 5.0]},
+        "thickness": 0.2, "height": 2.8, "base_offset": 0.0, "alignment": "center"
+      }
+    },
+    "doors": {
+      "dor_ground_entry": {
+        "id": "dor_ground_entry", "entity_type": "door", "name": "Main Entry", "host_wall_id": "wal_ground_south",
+        "center_offset": 2.0, "width": 1.1, "height": 2.2, "bottom_offset": 0.0
+      },
+      "dor_upper_balcony": {
+        "id": "dor_upper_balcony", "entity_type": "door", "name": "Upper Terrace Door", "host_wall_id": "wal_upper_east",
+        "center_offset": 2.2, "width": 0.9, "height": 2.1, "bottom_offset": 0.0
+      }
+    },
+    "windows": {
+      "win_ground_south": {
+        "id": "win_ground_south", "entity_type": "window", "name": "Living South Window", "host_wall_id": "wal_ground_south",
+        "center_offset": 6.0, "width": 2.4, "height": 1.3, "bottom_offset": 0.8
+      },
+      "win_ground_east": {
+        "id": "win_ground_east", "entity_type": "window", "name": "Kitchen East Window", "host_wall_id": "wal_ground_east",
+        "center_offset": 2.5, "width": 1.8, "height": 1.2, "bottom_offset": 0.9
+      },
+      "win_upper_south": {
+        "id": "win_upper_south", "entity_type": "window", "name": "Suite South Window", "host_wall_id": "wal_upper_south",
+        "center_offset": 3.0, "width": 2.0, "height": 1.3, "bottom_offset": 0.8
+      },
+      "win_upper_north": {
+        "id": "win_upper_north", "entity_type": "window", "name": "Library North Window", "host_wall_id": "wal_upper_north",
+        "center_offset": 3.0, "width": 2.2, "height": 1.2, "bottom_offset": 0.9
+      }
+    },
+    "stairs": {}
+  },
+  "metadata": {
+    "description": "Two-floor showcase World Model generated only into validated read-only artifacts."
+  },
+  "extensions": {}
+}

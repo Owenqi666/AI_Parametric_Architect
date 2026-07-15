@@ -1,7 +1,7 @@
 import { parseRenderIr, RenderIrContractError } from "./parse";
 import type { RenderIr } from "./types";
 
-export const DEFAULT_RENDER_IR_SOURCE = "/examples/simple-house.render-ir.json";
+export const DEFAULT_RENDER_IR_SOURCE = "/examples/showcase-house.render-ir.json";
 const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
 
 export class RenderIrLoadError extends Error {
