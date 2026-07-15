@@ -1,14 +1,24 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any, cast, get_type_hints
 
 import pytest
 
-from ai_parametric_architect.domain import DesignIntent, PatchProposal
+from ai_parametric_architect.domain import DesignIntent, PatchProposal, PlanningError
 from ai_parametric_architect.llm import (
+    LLMConfigurationError,
     LLMContractError,
     LLMOutputKind,
     LLMProvider,
+    LLMProviderAuthenticationError,
+    LLMProviderError,
+    LLMProviderRateLimitError,
+    LLMProviderRefusalError,
+    LLMProviderResponseError,
+    LLMProviderTimeoutError,
+    LLMProviderTruncatedError,
+    LLMProviderUnavailableError,
     StructuredPrompt,
 )
 from ai_parametric_architect.llm.base import (
@@ -133,4 +143,92 @@ def test_matching_output_contract_rejects_wrong_allowed_value() -> None:
         "output_kind": "design_intent",
         "actual_type": "FloorPlanProposal",
         "expected_type": "DesignIntent",
+    }
+
+
+@pytest.mark.parametrize(
+    ("factory", "code", "message"),
+    [
+        (
+            LLMConfigurationError,
+            "LLM_CONFIGURATION_INVALID",
+            "Language-model provider configuration is invalid.",
+        ),
+        (
+            LLMProviderError,
+            "LLM_PROVIDER_FAILED",
+            "The language-model provider request failed.",
+        ),
+        (
+            LLMProviderAuthenticationError,
+            "LLM_PROVIDER_AUTHENTICATION_FAILED",
+            "The language-model provider rejected its credentials.",
+        ),
+        (
+            LLMProviderTimeoutError,
+            "LLM_PROVIDER_TIMEOUT",
+            "The language-model provider request timed out.",
+        ),
+        (
+            LLMProviderRateLimitError,
+            "LLM_PROVIDER_RATE_LIMITED",
+            "The language-model provider rate limit was exceeded.",
+        ),
+        (
+            LLMProviderUnavailableError,
+            "LLM_PROVIDER_UNAVAILABLE",
+            "The language-model provider is unavailable.",
+        ),
+        (
+            LLMProviderRefusalError,
+            "LLM_PROVIDER_REFUSED",
+            "The language-model provider refused the request.",
+        ),
+        (
+            LLMProviderTruncatedError,
+            "LLM_PROVIDER_TRUNCATED",
+            "The language-model provider returned an incomplete response.",
+        ),
+        (
+            LLMProviderResponseError,
+            "LLM_PROVIDER_RESPONSE_INVALID",
+            "The language-model provider returned an invalid response.",
+        ),
+    ],
+)
+def test_provider_errors_use_stable_sanitized_messages(
+    factory: Callable[..., PlanningError],
+    code: str,
+    message: str,
+) -> None:
+    error = factory()
+
+    assert error.to_dict() == {
+        "code": code,
+        "path": "",
+        "message": message,
+        "details": {},
+    }
+    assert "vendor-secret-response" not in str(error)
+    with pytest.raises(TypeError):
+        cast(Callable[[str], PlanningError], factory)("vendor-secret-response")
+
+
+def test_provider_error_defensively_copies_allowlisted_details() -> None:
+    details: dict[str, object] = {
+        "provider": "openai",
+        "reason": "UPSTREAM_UNAVAILABLE",
+    }
+    error = LLMProviderUnavailableError(path="/provider", details=details)
+
+    details["reason"] = "mutated"
+
+    assert error.to_dict() == {
+        "code": "LLM_PROVIDER_UNAVAILABLE",
+        "path": "/provider",
+        "message": "The language-model provider is unavailable.",
+        "details": {
+            "provider": "openai",
+            "reason": "UPSTREAM_UNAVAILABLE",
+        },
     }

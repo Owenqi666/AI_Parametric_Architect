@@ -151,6 +151,39 @@ minimums are planning policy only. Proposal byte stability is tested with the pi
 solver/runtime, but is not a cross-version or cross-architecture cryptographic
 guarantee.
 
+## Network LLM boundary
+
+Final Enhancement Priority 2 adds an opt-in OpenAI Responses adapter under
+`infrastructure/llm`. It is not used by the default composition, CLI, or FastAPI routes.
+The real adapter accepts only the untrusted natural-language requirement and can return
+only a locally validated `DesignIntent`; FloorPlan and Patch output kinds fail before
+network I/O. It never receives a World Model, revision, geometry, repository handle,
+authorization gateway, Patch engine, or commit service.
+
+The request uses a strict canonical DesignIntent transport schema, no tools,
+`store=False`, disabled truncation, and explicit timeout, token, input-byte, response-byte,
+and retry budgets. Requirements are serialized inside a canonical JSON data envelope so
+embedded instructions do not alter the system contract. A successful provider envelope
+is still untrusted: local decoding rejects duplicate members, non-standard numbers,
+trailing content, non-object roots, unexpected fields, over-budget output, and ambiguous
+message/tool content before the existing `IntentValidator` and `DesignIntent.from_dict`
+run. Refusal and incomplete output fail closed; the adapter does not ask the model to
+self-repair malformed output.
+
+Credentials are read by the SDK from `OPENAI_API_KEY` or an equivalent managed secret
+channel and are absent from `OpenAIProviderConfig`, prompts, structured errors, and Agent
+traces. Provider exceptions are mapped to fixed messages and allowlisted JSON details;
+raw exception, response, refusal, requirement, and credential text is not logged or
+returned. Automatic SDK retry defaults to zero and can only be set within a small trusted
+configuration bound. Production deployments must separately enforce egress policy,
+rate/concurrency/cost limits, model-snapshot approval, vendor data residency and retention
+review, credential rotation, and SDK/debug-log controls. `store=False` does not by itself
+establish regulatory or contractual compliance.
+
+The validated intent then enters the unchanged CP-SAT planner. Its coordinates remain a
+detached `FloorPlanProposal v2`; LLM involvement does not grant proposal realization,
+Render IR admission, geometry authorization, or revision commit authority.
+
 ## Planning-metric boundary
 
 Phase 7 Task 7.2 scores already-produced detached proposals. The evaluator has no
@@ -232,8 +265,8 @@ existing room-slot semantic fields needed by the current capability, and extensi
 presence. Authoritative World Model geometry, arbitrary metadata, secrets, and
 unrelated extension content are excluded. A detached v2 proposal may contain its own
 candidate rectangles; those values remain untrusted suggestions and do not widen Patch
-or commit authority. A future provider adapter must preserve or further restrict this
-projection.
+or commit authority. The real OpenAI adapter is narrower still: it receives only
+requirement text and never invokes this Patch-prompt projection.
 
 ## Known limitations and deployment requirements
 
@@ -247,7 +280,8 @@ Before exposing the prototype to untrusted internet traffic, a deployment must a
 - browser CSP/security headers, static-asset integrity controls, and WebGL/GPU resource isolation;
 - TLS, security headers, dependency and container scanning, and incident monitoring;
 - a persistence migration and recovery strategy;
-- threat-model review of any future network LLM provider and its data-retention terms.
+- provider egress allowlisting, cost/rate/concurrency controls, approved model snapshots,
+  credential lifecycle management, and legal review of vendor data-retention/residency terms.
 
 The same-origin client check does not replace server-side authentication, authorization,
 CSP, or resource quotas, and the current viewer does not make `/v1/models/render/ir`
@@ -255,5 +289,6 @@ safe for public internet exposure. Render IR v1 omits stairs and represents door
 openings as panels without CSG; consumers must not infer that an undisplayed stair is
 absent from the World Model or that a wall has been authoritatively cut.
 
-Do not connect a real LLM, broaden an authorization allowlist, or add a new agent write
-capability without a dedicated security review and adversarial regression tests.
+Do not expose or broaden the real LLM adapter, expand its output kinds/data projection,
+broaden an authorization allowlist, or add a new agent write capability without a
+dedicated security review and adversarial regression tests.

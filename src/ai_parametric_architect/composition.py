@@ -21,7 +21,12 @@ from ai_parametric_architect.domain import (
 )
 from ai_parametric_architect.editing import JsonPatchEngine
 from ai_parametric_architect.geometry_engine import ShapelyGeometryEngine
-from ai_parametric_architect.infrastructure import SystemClock
+from ai_parametric_architect.infrastructure import (
+    OpenAIProviderConfig,
+    OpenAIResponsesProvider,
+    SystemClock,
+)
+from ai_parametric_architect.llm import LLMRequirementParser
 from ai_parametric_architect.planning import (
     AgentPlanningPipeline,
     ConstraintFloorPlanPlanner,
@@ -104,6 +109,13 @@ def create_requirement_agent() -> RequirementAgent:
     """Compose Task 2 with the deterministic parser; no LLM adapter is connected."""
 
     return RequirementAgent(RuleBasedRequirementParser())
+
+
+def create_openai_requirement_agent(config: OpenAIProviderConfig) -> RequirementAgent:
+    """Explicitly opt into network-backed requirement parsing; no write ports are injected."""
+
+    provider = OpenAIResponsesProvider(config)
+    return RequirementAgent(LLMRequirementParser(provider))
 
 
 def create_architecture_planner_agent() -> ArchitecturePlannerAgent:

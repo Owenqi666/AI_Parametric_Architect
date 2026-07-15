@@ -6,8 +6,8 @@ Schema 校验结果、Shapely 对象、SVG、Render IR 和 Three.js scene 都是
 
 当前定位：**Production-oriented AI Agent Framework Prototype with constraint-aware
 detached planning, evaluation, and read-only 3D visualization**。它已完成安全硬化、
-Phase 7 Task 7.1–7.2 和 Final Enhancement Priority 1，但仍不是可直接暴露到公网的
-production-ready 服务。
+Phase 7 Task 7.1–7.2，以及 Final Enhancement Priority 1–2，但仍不是可直接暴露到公网的
+production-ready 服务。OpenAI 网络解析是显式 opt-in，默认组合仍完全确定且不联网。
 
 当前 MVP 已打通：
 
@@ -48,7 +48,9 @@ Natural Language
   -> semantic-only PatchProposal + affected entity IDs
   -> validation + revision commit
 
-Typed LLMProvider (Mock only; no network API)
+Typed LLMProvider
+  -> deterministic Mock for all three typed output contracts
+  -> opt-in OpenAI Responses adapter for DesignIntent only
   -> Requirement / FloorPlan / Patch proposal adapters
   -> EvaluationRunner + detached full validation
   -> tenant-scoped HMAC AgentTrace correlation (no chain-of-thought)
@@ -67,8 +69,10 @@ CP-SAT 的 `FloorPlanProposal v2` 仍是 detached Proposal：它不是 Render IR
 也不会被 Three.js 当作已提交几何显示。只有先经过授权 Patch、完整验证和 revision CAS，
 进入权威 JSON World Model 的几何才可能被 Render IR 投影。
 
-本版本不连接任何真实 LLM/API，也不包含 Multi-Agent、自动修正、DXF、IFC 或规范 RAG。
-新增的 `MockLLMProvider` 只用于确定性测试和边界验收。
+本版本包含真实 OpenAI Responses API 适配器，但不会由默认 composition、CLI 或 FastAPI
+自动启用；真实适配器只做 requirement → `DesignIntent`，不会生成 FloorPlan、Patch 或读取
+World Model。`MockLLMProvider` 继续覆盖全部三个 typed contract 的确定性测试。
+当前仍不包含 Multi-Agent、自动修正、DXF、IFC 或规范 RAG。
 
 当前硬化里程碑将所有输入统一到严格 JSON trust boundary，对模型与 Patch
 执行计算预算，以防御性快照修复 Revision 初始化 TOCTOU，并将 Agent 提交、
@@ -176,6 +180,38 @@ cd frontend
 npm ci
 npm run dev
 ```
+
+## Real LLM Adapter（Final Enhancement Priority 2）
+
+`OpenAIResponsesProvider` 位于 `infrastructure/llm`，使用 Responses API strict JSON Schema，
+但仍通过 provider-neutral `LLMProvider` 返回精确的不可变 `DesignIntent`。它不开放真实网络的
+FloorPlan 或 Patch 输出；这两种 `LLMOutputKind` 会在网络调用前 fail closed。成功响应还必须在
+本地依次通过严格 JSON 解码（拒绝重复 key、非有限数、trailing text）、响应字节预算、
+`IntentValidator` 和 `DesignIntent.from_dict()`，供应商的 structured-output 保证不是信任边界。
+
+真实解析只能显式创建，现有 `create_requirement_agent()` 和所有默认服务保持不联网：
+
+```python
+import os
+
+from ai_parametric_architect.composition import (
+    create_architecture_planner_agent,
+    create_openai_requirement_agent,
+)
+from ai_parametric_architect.infrastructure import OpenAIProviderConfig
+
+requirement_agent = create_openai_requirement_agent(
+    OpenAIProviderConfig(model=os.environ["OPENAI_MODEL"])
+)
+intent = requirement_agent.run("Create a 120 sqm three bedroom house")
+proposal = create_architecture_planner_agent().run(intent)
+```
+
+OpenAI SDK 从 `OPENAI_API_KEY` 读取凭据；key 不属于 config、prompt、错误或 trace。model 必须由
+可信部署配置显式给出，生产环境应固定经过验证且支持 Structured Outputs 的 snapshot。
+请求禁用 tools，设置 `store=False`、`truncation="disabled"`、有限 timeout/token/byte budget，
+SDK retry 默认是 0（可信部署最多可显式设为 2）。所得 CP-SAT `proposal` 仍是 detached v2
+建议，不能进入 Render IR，也不会创建 committed geometry。
 
 ## Revision 与 JSON Patch
 
@@ -432,9 +468,9 @@ DesignIntent v1 尚无实例 selector。
 固定尺寸或版本化 utilization/aspect 推导策略。circulation 只是中心距离代理，不是门、
 走廊、可达图或疏散分析；最小面积默认值是 planning policy，不是建筑规范结论。
 
-Phase 7 当前完成 Task 7.1–7.2。Task 7.3 knowledge layer、Task 7.4 network
-LLM adapters、Task 7.5 benchmark 和 Task 7.6 proposal evaluation loop 仍待后续
-按顺序实施。
+Phase 7 当前完成 Task 7.1–7.2；Final Enhancement Priority 2 已以 DesignIntent-only
+OpenAI adapter 完成 Task 7.4 的受限网络路径。Task 7.3 knowledge layer、Task 7.5
+benchmark 和 Task 7.6 proposal evaluation loop 仍待后续按顺序实施。
 
 ## Constraint Reasoning Agent（Roadmap Task 4）
 
@@ -547,7 +583,10 @@ FloorPlan prompt 只包含经验证 intent；Patch prompt 接收显式传入的 
 `ModelRevision` 防御性快照，但只向 provider 投影 `base_model_id` / `base_revision`、
 owned planning record 和现有 room slot 的必要语义字段。坐标、metadata 和任意
 extension 内容不会进入 prompt。
-即使未来接入真实 provider，其输出仍只是 proposal，不能直接改写世界模型。
+真实 OpenAI provider 只接收自然语言 requirement，只返回经本地二次验证的
+`DesignIntent`。它没有 revision、World Model、repository、authorization、Patch 或 commit
+依赖；供应商拒绝、不完整响应、网络失败和无效 JSON 使用稳定、脱敏的 provider-neutral
+错误码。Mock 仍可显式测试 FloorPlan/Patch 合同，但真实网络能力没有扩展到这两个类型。
 
 ## Agent Evaluation Framework（Task 6.2）
 
@@ -675,7 +714,8 @@ src/ai_parametric_architect/
   editing/           strict JSON Pointer and atomic JSON Patch engine
   evaluation/        scenarios, detached validation runner and planning metrics
   geometry_engine/   Shapely adapter; Shapely objects stay here
-  infrastructure/    UTC clock adapter
+  infrastructure/    UTC clock and opt-in OpenAI Responses adapters
+    llm/              vendor SDK/network boundary; DesignIntent extraction only
   intent/            versioned Design Intent models, Schema and validator
   llm/               typed provider contract, prompts, adapters and Mock provider
   planning/          parsers, versioned Plan IR, CP-SAT solver and safe patch planning

@@ -12,14 +12,16 @@ requirement JSON -> intent schema + semantics -> immutable DesignIntent
 DesignIntent -> PlanningRules + CP-SAT -> detached spatial FloorPlanProposal -> semantic PatchProposal
 ValidationIssue -> symbolic ConstraintResolutionPlan (no automatic edit)
 typed LLM suggestion -> existing Agent ports -> proposal values only
+untrusted requirement -> OpenAI strict output -> local DesignIntent validation -> existing CP-SAT detached proposal
 Scenario -> Agent pipeline -> detached full validation -> evaluation metrics
 observable JSON boundaries -> tenant/domain HMAC + safe metadata -> AgentTrace
 ```
 
-The current agent-evolution milestone provides a provider-neutral LLM contract and a
-deterministic Mock, but does not connect a network LLM or vendor SDK. Final Enhancement
-Priority 1 adds read-only Three.js visualization; it does not add World Model editing,
-proposal realization, automatic geometry correction, DXF, or IFC export.
+The provider-neutral LLM contract retains its deterministic Mock. Final Enhancement
+Priority 2 adds an explicitly enabled OpenAI Responses infrastructure adapter for
+DesignIntent extraction only; default composition remains deterministic and offline.
+Priorities 1–2 do not add World Model editing, proposal realization, automatic geometry
+correction, DXF, or IFC export.
 
 ## Architectural style
 
@@ -78,6 +80,9 @@ Dependency rules:
 16. Planner, solver, and evaluation output cannot enter Render IR as authoritative geometry.
     A detached proposal must first pass a separately authorized realization, complete
     validation, and CAS commit before the committed JSON can be projected.
+17. Vendor SDK and network imports are confined to `infrastructure/llm`. The real provider
+    accepts no revision or World Model and supports only `DesignIntent`; all other output
+    kinds fail before a request is sent.
 
 ## JSON model strategy
 
@@ -193,7 +198,7 @@ remain stored only as explicitly untrusted diagnostics.
 | `backend` | FastAPI transport adapter | Contain validation rules |
 | `ports` | Define clock, patch, planning, rendering/projecting, export, and revision boundaries | Implement vendor behavior |
 | `repositories` | Store immutable revisions, history stacks, and audit events | Skip CAS or validation orchestration |
-| `infrastructure` | Provide small production adapters such as the UTC clock | Own domain policy |
+| `infrastructure` | Provide production adapters such as the UTC clock and opt-in OpenAI requirement extraction | Own domain policy or obtain write-side capabilities |
 | `frontend` | Admit versioned Render IR, build/dispose Three.js resources, and provide read-only interaction | Read raw World Model JSON, generate Patch operations, access revisions, authorize, or commit |
 
 ## Validation levels
@@ -280,9 +285,10 @@ candidate leaves all repository state unchanged.
 The current repository is thread-safe and process-local. A future database adapter
 must preserve the same atomicity and defensive-copy semantics. Deterministic
 Requirement and Architecture Planner agents now produce intent/plan proposals only.
-Production composition remains deterministic; the typed LLM adapters and Mock are
-available for explicit injection, but no network provider is connected and no agent
-may edit persisted models directly.
+Production composition remains deterministic by default. The Mock is available for
+explicit injection, and `create_openai_requirement_agent` is the sole opt-in network
+composition path. No provider is injected into the default service and no agent may
+edit persisted models directly.
 
 Every write also requires a separately supplied `TrustedAuditIdentity` containing
 `actor_id`, typed actor category, `trace_id`, and an `agent_version` for Agent actors.
@@ -558,9 +564,37 @@ adapter does not discover a repository or current head itself.
 only `parse`, `plan`, and `generate`, respectively. They can be injected into the
 existing Agents through structural ports but cannot apply a Patch, run a commit, or
 obtain repository state. `MockLLMProvider` is an ordered in-memory typed-response
-adapter for deterministic tests. A later real provider must deserialize external
-structured output into the exact domain value inside its own adapter before returning;
-raw provider mappings never cross the typed LLM boundary.
+adapter for deterministic tests.
+
+Final Enhancement Priority 2 adds one concrete outer adapter:
+
+```text
+natural-language requirement
+  -> canonical JSON data envelope
+  -> OpenAI Responses API (strict DesignIntent transport schema, no tools, store=false)
+  -> bounded response envelope
+  -> strict JSON decode
+  -> IntentValidator schema + semantic validation
+  -> exact DesignIntent.from_dict
+  -> RequirementAgent
+  -> existing ConstraintFloorPlanPlanner
+  -> detached FloorPlanProposal v2
+```
+
+The SDK import is confined to `infrastructure/llm/openai_provider.py`. Its transport
+schema is a defensive canonical expansion of the authoritative Design Intent contract:
+all five fields are required for Structured Outputs, `rooms` is expanded, orientation
+is nullable, and spatial constraints are always an array. The packaged provider-neutral
+schema remains unchanged and performs the independent local validation. Raw mappings
+never cross the typed LLM boundary.
+
+The real adapter rejects `FLOOR_PLAN_PROPOSAL` and `PATCH_PROPOSAL` before network I/O.
+It receives neither revision nor World Model data, has no tools, and has no repository,
+policy, editing, validation-bypass, authorization, or commit capability. Configuration
+is explicit and credential-free; the SDK reads credentials from the deployment secret
+channel. Provider failures use stable sanitized errors. The default factory still uses
+`RuleBasedRequirementParser`, so importing or running the normal application does not
+initiate model traffic.
 
 ## Agent Evaluation boundary: Task 6.2
 
