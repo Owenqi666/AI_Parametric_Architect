@@ -16,11 +16,20 @@ export default defineConfig(async () => {
   process.env.WRANGLER_LOG_PATH ??= ".wrangler/logs";
   process.env.MINIFLARE_REGISTRY_PATH ??= ".wrangler/registry";
   const { cloudflare } = await import("@cloudflare/vite-plugin");
+  const apiOrigin = process.env.SHOWCASE_API_ORIGIN ?? "http://127.0.0.1:8000";
+
+  const server = {
+    ...(isCodexSeatbeltSandbox
+      ? { watch: { useFsEvents: false, usePolling: true } }
+      : {}),
+    proxy: {
+      "/v1": { target: apiOrigin, changeOrigin: false },
+      "/health": { target: apiOrigin, changeOrigin: false },
+    },
+  };
 
   return {
-    server: isCodexSeatbeltSandbox
-      ? { watch: { useFsEvents: false, usePolling: true } }
-      : undefined,
+    server,
     plugins: [
       vinext(),
       sites(),
