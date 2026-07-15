@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#f1eee7"/>
+  <rect x="4" y="4" width="56" height="56" rx="11" fill="none" stroke="#253134" stroke-width="2"/>
+  <path d="M12 52 52 12" stroke="#4f9296" stroke-width="5"/>
+  <text x="32" y="38" fill="#151b1c" font-family="ui-monospace, monospace" font-size="16" font-weight="800" text-anchor="middle">AP</text>
+</svg>

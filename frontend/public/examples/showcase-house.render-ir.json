@@ -1,0 +1,925 @@
+{
+  "bounds": {
+    "max": [
+      12.1,
+      8.1,
+      6.0
+    ],
+    "min": [
+      -0.1,
+      -0.1,
+      0.0
+    ]
+  },
+  "coordinate_system": {
+    "handedness": "right",
+    "origin": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "type": "local_cartesian",
+    "up_axis": "Z"
+  },
+  "floors": [
+    {
+      "elevation": 0.0,
+      "entity_id": "flr_ground",
+      "entity_type": "floor",
+      "height": 2.8,
+      "name": "Ground Floor"
+    },
+    {
+      "elevation": 3.2,
+      "entity_id": "flr_upper",
+      "entity_type": "floor",
+      "height": 2.8,
+      "name": "Upper Floor"
+    }
+  ],
+  "objects": [
+    {
+      "entity_id": "rom_ground_kitchen",
+      "entity_type": "room",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "exterior": [
+          [
+            8.1,
+            0.1,
+            0.0
+          ],
+          [
+            11.9,
+            0.1,
+            0.0
+          ],
+          [
+            11.9,
+            4.9,
+            0.0
+          ],
+          [
+            8.1,
+            4.9,
+            0.0
+          ],
+          [
+            8.1,
+            0.1,
+            0.0
+          ]
+        ],
+        "holes": [],
+        "kind": "polygon_surface"
+      },
+      "name": "South Kitchen"
+    },
+    {
+      "entity_id": "rom_ground_living",
+      "entity_type": "room",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "exterior": [
+          [
+            0.1,
+            0.1,
+            0.0
+          ],
+          [
+            7.9,
+            0.1,
+            0.0
+          ],
+          [
+            7.9,
+            4.9,
+            0.0
+          ],
+          [
+            0.1,
+            4.9,
+            0.0
+          ],
+          [
+            0.1,
+            0.1,
+            0.0
+          ]
+        ],
+        "holes": [],
+        "kind": "polygon_surface"
+      },
+      "name": "Living Studio"
+    },
+    {
+      "entity_id": "rom_ground_office",
+      "entity_type": "room",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "exterior": [
+          [
+            0.1,
+            5.1,
+            0.0
+          ],
+          [
+            5.9,
+            5.1,
+            0.0
+          ],
+          [
+            5.9,
+            7.9,
+            0.0
+          ],
+          [
+            0.1,
+            7.9,
+            0.0
+          ],
+          [
+            0.1,
+            5.1,
+            0.0
+          ]
+        ],
+        "holes": [],
+        "kind": "polygon_surface"
+      },
+      "name": "Design Office"
+    },
+    {
+      "entity_id": "rom_ground_service",
+      "entity_type": "room",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "exterior": [
+          [
+            6.1,
+            5.1,
+            0.0
+          ],
+          [
+            11.9,
+            5.1,
+            0.0
+          ],
+          [
+            11.9,
+            7.9,
+            0.0
+          ],
+          [
+            6.1,
+            7.9,
+            0.0
+          ],
+          [
+            6.1,
+            5.1,
+            0.0
+          ]
+        ],
+        "holes": [],
+        "kind": "polygon_surface"
+      },
+      "name": "Service Core"
+    },
+    {
+      "entity_id": "rom_upper_bedroom",
+      "entity_type": "room",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "exterior": [
+          [
+            6.1,
+            0.1,
+            3.2
+          ],
+          [
+            11.9,
+            0.1,
+            3.2
+          ],
+          [
+            11.9,
+            4.9,
+            3.2
+          ],
+          [
+            6.1,
+            4.9,
+            3.2
+          ],
+          [
+            6.1,
+            0.1,
+            3.2
+          ]
+        ],
+        "holes": [],
+        "kind": "polygon_surface"
+      },
+      "name": "East Bedroom"
+    },
+    {
+      "entity_id": "rom_upper_library",
+      "entity_type": "room",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "exterior": [
+          [
+            6.1,
+            5.1,
+            3.2
+          ],
+          [
+            11.9,
+            5.1,
+            3.2
+          ],
+          [
+            11.9,
+            7.9,
+            3.2
+          ],
+          [
+            6.1,
+            7.9,
+            3.2
+          ],
+          [
+            6.1,
+            5.1,
+            3.2
+          ]
+        ],
+        "holes": [],
+        "kind": "polygon_surface"
+      },
+      "name": "North Library"
+    },
+    {
+      "entity_id": "rom_upper_suite",
+      "entity_type": "room",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "exterior": [
+          [
+            0.1,
+            0.1,
+            3.2
+          ],
+          [
+            5.9,
+            0.1,
+            3.2
+          ],
+          [
+            5.9,
+            7.9,
+            3.2
+          ],
+          [
+            0.1,
+            7.9,
+            3.2
+          ],
+          [
+            0.1,
+            0.1,
+            3.2
+          ]
+        ],
+        "holes": [],
+        "kind": "polygon_surface"
+      },
+      "name": "Primary Suite"
+    },
+    {
+      "entity_id": "wal_ground_east",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "footprint": [
+          [
+            11.9,
+            0.0,
+            0.0
+          ],
+          [
+            11.9,
+            8.0,
+            0.0
+          ],
+          [
+            12.1,
+            8.0,
+            0.0
+          ],
+          [
+            12.1,
+            0.0,
+            0.0
+          ],
+          [
+            11.9,
+            0.0,
+            0.0
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Ground East Wall"
+    },
+    {
+      "entity_id": "wal_ground_north",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "footprint": [
+          [
+            12.0,
+            7.9,
+            0.0
+          ],
+          [
+            0.0,
+            7.9,
+            0.0
+          ],
+          [
+            0.0,
+            8.1,
+            0.0
+          ],
+          [
+            12.0,
+            8.1,
+            0.0
+          ],
+          [
+            12.0,
+            7.9,
+            0.0
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Ground North Wall"
+    },
+    {
+      "entity_id": "wal_ground_service",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "footprint": [
+          [
+            5.9,
+            5.0,
+            0.0
+          ],
+          [
+            5.9,
+            8.0,
+            0.0
+          ],
+          [
+            6.1,
+            8.0,
+            0.0
+          ],
+          [
+            6.1,
+            5.0,
+            0.0
+          ],
+          [
+            5.9,
+            5.0,
+            0.0
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Service Divider"
+    },
+    {
+      "entity_id": "wal_ground_south",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "footprint": [
+          [
+            0.0,
+            0.1,
+            0.0
+          ],
+          [
+            12.0,
+            0.1,
+            0.0
+          ],
+          [
+            12.0,
+            -0.1,
+            0.0
+          ],
+          [
+            0.0,
+            -0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.0
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Ground South Wall"
+    },
+    {
+      "entity_id": "wal_ground_split_east",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "footprint": [
+          [
+            7.9,
+            0.0,
+            0.0
+          ],
+          [
+            7.9,
+            5.0,
+            0.0
+          ],
+          [
+            8.1,
+            5.0,
+            0.0
+          ],
+          [
+            8.1,
+            0.0,
+            0.0
+          ],
+          [
+            7.9,
+            0.0,
+            0.0
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Kitchen Divider"
+    },
+    {
+      "entity_id": "wal_ground_split_north",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "footprint": [
+          [
+            0.0,
+            5.1,
+            0.0
+          ],
+          [
+            12.0,
+            5.1,
+            0.0
+          ],
+          [
+            12.0,
+            4.9,
+            0.0
+          ],
+          [
+            0.0,
+            4.9,
+            0.0
+          ],
+          [
+            0.0,
+            5.1,
+            0.0
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "North Divider"
+    },
+    {
+      "entity_id": "wal_ground_west",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "footprint": [
+          [
+            0.1,
+            8.0,
+            0.0
+          ],
+          [
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            -0.1,
+            0.0,
+            0.0
+          ],
+          [
+            -0.1,
+            8.0,
+            0.0
+          ],
+          [
+            0.1,
+            8.0,
+            0.0
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Ground West Wall"
+    },
+    {
+      "entity_id": "wal_upper_east",
+      "entity_type": "wall",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "footprint": [
+          [
+            11.9,
+            0.0,
+            3.2
+          ],
+          [
+            11.9,
+            8.0,
+            3.2
+          ],
+          [
+            12.1,
+            8.0,
+            3.2
+          ],
+          [
+            12.1,
+            0.0,
+            3.2
+          ],
+          [
+            11.9,
+            0.0,
+            3.2
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Upper East Wall"
+    },
+    {
+      "entity_id": "wal_upper_library",
+      "entity_type": "wall",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "footprint": [
+          [
+            6.0,
+            5.1,
+            3.2
+          ],
+          [
+            12.0,
+            5.1,
+            3.2
+          ],
+          [
+            12.0,
+            4.9,
+            3.2
+          ],
+          [
+            6.0,
+            4.9,
+            3.2
+          ],
+          [
+            6.0,
+            5.1,
+            3.2
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Library Divider"
+    },
+    {
+      "entity_id": "wal_upper_north",
+      "entity_type": "wall",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "footprint": [
+          [
+            12.0,
+            7.9,
+            3.2
+          ],
+          [
+            0.0,
+            7.9,
+            3.2
+          ],
+          [
+            0.0,
+            8.1,
+            3.2
+          ],
+          [
+            12.0,
+            8.1,
+            3.2
+          ],
+          [
+            12.0,
+            7.9,
+            3.2
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Upper North Wall"
+    },
+    {
+      "entity_id": "wal_upper_south",
+      "entity_type": "wall",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "footprint": [
+          [
+            0.0,
+            0.1,
+            3.2
+          ],
+          [
+            12.0,
+            0.1,
+            3.2
+          ],
+          [
+            12.0,
+            -0.1,
+            3.2
+          ],
+          [
+            0.0,
+            -0.1,
+            3.2
+          ],
+          [
+            0.0,
+            0.1,
+            3.2
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Upper South Wall"
+    },
+    {
+      "entity_id": "wal_upper_split",
+      "entity_type": "wall",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "footprint": [
+          [
+            5.9,
+            0.0,
+            3.2
+          ],
+          [
+            5.9,
+            8.0,
+            3.2
+          ],
+          [
+            6.1,
+            8.0,
+            3.2
+          ],
+          [
+            6.1,
+            0.0,
+            3.2
+          ],
+          [
+            5.9,
+            0.0,
+            3.2
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Upper Suite Divider"
+    },
+    {
+      "entity_id": "wal_upper_west",
+      "entity_type": "wall",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "footprint": [
+          [
+            0.1,
+            8.0,
+            3.2
+          ],
+          [
+            0.1,
+            0.0,
+            3.2
+          ],
+          [
+            -0.1,
+            0.0,
+            3.2
+          ],
+          [
+            -0.1,
+            8.0,
+            3.2
+          ],
+          [
+            0.1,
+            8.0,
+            3.2
+          ]
+        ],
+        "height": 2.8,
+        "kind": "vertical_extrusion"
+      },
+      "name": "Upper West Wall"
+    },
+    {
+      "entity_id": "dor_ground_entry",
+      "entity_type": "door",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "end": [
+          2.55,
+          0.0,
+          0.0
+        ],
+        "height": 2.2,
+        "kind": "opening_panel",
+        "start": [
+          1.45,
+          0.0,
+          0.0
+        ],
+        "thickness": 0.2
+      },
+      "host_wall_id": "wal_ground_south",
+      "name": "Main Entry"
+    },
+    {
+      "entity_id": "dor_upper_balcony",
+      "entity_type": "door",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "end": [
+          12.0,
+          2.6500000000000004,
+          3.2
+        ],
+        "height": 2.1,
+        "kind": "opening_panel",
+        "start": [
+          12.0,
+          1.7500000000000002,
+          3.2
+        ],
+        "thickness": 0.2
+      },
+      "host_wall_id": "wal_upper_east",
+      "name": "Upper Terrace Door"
+    },
+    {
+      "entity_id": "win_ground_east",
+      "entity_type": "window",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "end": [
+          12.0,
+          3.4,
+          0.9
+        ],
+        "height": 1.2,
+        "kind": "opening_panel",
+        "start": [
+          12.0,
+          1.6,
+          0.9
+        ],
+        "thickness": 0.2
+      },
+      "host_wall_id": "wal_ground_east",
+      "name": "Kitchen East Window"
+    },
+    {
+      "entity_id": "win_ground_south",
+      "entity_type": "window",
+      "floor_id": "flr_ground",
+      "geometry": {
+        "end": [
+          7.2,
+          0.0,
+          0.8
+        ],
+        "height": 1.3,
+        "kind": "opening_panel",
+        "start": [
+          4.8,
+          0.0,
+          0.8
+        ],
+        "thickness": 0.2
+      },
+      "host_wall_id": "wal_ground_south",
+      "name": "Living South Window"
+    },
+    {
+      "entity_id": "win_upper_north",
+      "entity_type": "window",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "end": [
+          7.9,
+          8.0,
+          4.1000000000000005
+        ],
+        "height": 1.2,
+        "kind": "opening_panel",
+        "start": [
+          10.1,
+          8.0,
+          4.1000000000000005
+        ],
+        "thickness": 0.2
+      },
+      "host_wall_id": "wal_upper_north",
+      "name": "Library North Window"
+    },
+    {
+      "entity_id": "win_upper_south",
+      "entity_type": "window",
+      "floor_id": "flr_upper",
+      "geometry": {
+        "end": [
+          4.0,
+          0.0,
+          4.0
+        ],
+        "height": 1.3,
+        "kind": "opening_panel",
+        "start": [
+          2.0,
+          0.0,
+          4.0
+        ],
+        "thickness": 0.2
+      },
+      "host_wall_id": "wal_upper_south",
+      "name": "Suite South Window"
+    }
+  ],
+  "render_ir_version": "1.0.0",
+  "source_model": {
+    "model_id": "mdl_showcase_house",
+    "revision": 7,
+    "root_building_id": "bld_showcase_house",
+    "schema_version": "1.0.0"
+  },
+  "units": {
+    "angle": "degree",
+    "length": "m"
+  }
+}

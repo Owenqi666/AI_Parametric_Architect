@@ -1,5 +1,10 @@
 # AI Parametric Architect 工业级架构审查报告
 
+> **Historical review snapshot.** 本文记录 2026-07-15 安全硬化之前的审查结论，
+> 不是当前 release status。其 P1 项已在后续阶段按 `Security.md` 与回归测试收口；
+> 当前架构、作品集展示边界与已知限制请以 `README.md`、`architecture.md`、
+> `Security.md` 和 `docs/` 为准。保留本文用于展示审查到修复的可追溯性。
+
 审查日期：2026-07-15  
 审查角色：Principal AI Systems Engineer、AI Agent Infrastructure Reviewer、Software Architect、Security Reviewer、Open Source Maintainer
 

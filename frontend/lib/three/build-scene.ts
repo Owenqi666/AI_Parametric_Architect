@@ -83,6 +83,14 @@ function roomObject(item: RoomRenderObject): THREE.Group {
   mesh.position.z = item.geometry.exterior[0]?.[2] ?? 0;
   mesh.receiveShadow = true;
   group.add(mesh);
+  const edgeGeometry = new THREE.EdgesGeometry(geometry, 30);
+  const edges = new THREE.LineSegments(
+    edgeGeometry,
+    new THREE.LineBasicMaterial({ color: 0x81765d, transparent: true, opacity: 0.48 }),
+  );
+  edges.position.z = mesh.position.z + 0.004;
+  edges.userData.selectable = false;
+  group.add(edges);
   return group;
 }
 
@@ -102,6 +110,14 @@ function wallObject(item: WallRenderObject): THREE.Group {
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   group.add(mesh);
+  const edgeGeometry = new THREE.EdgesGeometry(geometry, 38);
+  const edges = new THREE.LineSegments(
+    edgeGeometry,
+    new THREE.LineBasicMaterial({ color: 0x707776, transparent: true, opacity: 0.44 }),
+  );
+  edges.position.z = mesh.position.z;
+  edges.userData.selectable = false;
+  group.add(edges);
   return group;
 }
 

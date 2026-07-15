@@ -16,6 +16,8 @@ untrusted requirement -> OpenAI strict output -> local DesignIntent validation -
 Scenario -> Agent pipeline -> detached full validation -> evaluation metrics
 versioned dataset + external annotations -> two-track benchmark -> redacted detached report
 observable JSON boundaries -> tenant/domain HMAC + safe metadata -> AgentTrace
+recorded ShowcaseScenario -> strict Proposal Preview contract -> detached browser diagram
+static/imported BenchmarkReport -> strict browser admission -> evidence-only Benchmark Lab
 ```
 
 The provider-neutral LLM contract retains its deterministic Mock. Final Enhancement
@@ -96,6 +98,9 @@ Dependency rules:
     values are detached evidence; none is a World Model/revision value, authorization
     result, or commit input. The core runner receives providers, planners, and clocks only
     through narrow injected ports and has no world-write dependency.
+19. Showcase fixtures and capability discovery are read-only presentation inputs. The
+    browser has no repository, Patch, authorization, validation-bypass, CAS, or audit client,
+    and a capability boolean never grants authority.
 
 ## JSON model strategy
 
@@ -189,6 +194,69 @@ The gateway accepts an explicit typed commit request, not an `EvaluationReport`,
 trusted application channel and is never inferred from LLM-controlled provenance or
 rationale. The latter remain stored only as explicitly untrusted diagnostics.
 
+## Showcase product boundary
+
+The productization layer adds four read-only/advisory browser workspaces without
+changing the modular-monolith core or the mandatory write path:
+
+```text
+Design Studio
+  recorded requirement -> typed DesignIntent -> detached FloorPlanProposal v2
+                                      |                    |
+                                      |                    +-> Proposal Preview admission
+                                      |                         -> Detached Planning Sandbox
+                                      +-> observable status only
+
+World Model Explorer
+  validated JSON revision -> WorldModelRenderIRProjector -> Render IR admission
+                                                        -> derived read-only 3D view
+                                                           of authoritative revision
+
+Benchmark Lab
+  committed/imported BenchmarkReport 1.0.0 -> exact browser admission
+                                           -> evidence visualizations
+
+Architecture & Safety
+  static explanation of the existing trust and write boundaries
+```
+
+The two geometry-looking surfaces are deliberately separate. `FloorPlanProposal v2`
+is wrapped in the versioned `planning-showcase.preview-1.0.0` presentation contract and
+is rendered only by the frontend proposal diagram. It is rejected by the Render IR
+parser and is never passed to `WorldModelRenderIRProjector`. Conversely, the World Model
+viewer accepts only validated `RenderIR 1.0.0`; it never overlays Proposal rectangles.
+Selection state and inspectors are local view state and cannot produce Patch operations.
+
+The offline showcase fixture is generated through the real typed path
+`MockLLMProvider -> LLMRequirementParser -> RequirementAgent -> CP-SAT`. The fixture
+records observable outputs and stable failure codes only; it contains no hidden reasoning.
+The deliberately conflicting scenario fails closed with `PLANNING_SOLVER_FAILED` and has
+no proposal or evaluation evidence; its already parsed DesignIntent remains visible so the
+failure stage is not misrepresented. “Recorded deterministic showcase” labels distinguish
+these fixtures from a live provider run.
+
+`GET /v1/capabilities` returns only explicit booleans:
+
+```json
+{
+  "openai_requirement_parser_available": false,
+  "benchmark_live_mode_available": false,
+  "live_planning_preview_available": false
+}
+```
+
+It does not inspect or disclose credentials, model names, environment values, or provider
+errors. This release's Studio exposes no live-provider control even if a custom composition
+declares a parser capability, because no reviewed live planning-preview endpoint exists.
+The booleans are diagnostic/future discovery metadata, not a UI or authority switch. A future
+live control requires the corresponding endpoint, strict contracts, tests, and security review.
+
+Imported benchmark files pass the same exact, versioned `BenchmarkReport 1.0.0` browser
+admission used for the bundled report. Unknown fields, invalid identities, non-finite
+values, inconsistent counts, and resource-budget violations fail closed before display.
+Admission yields a deeply frozen value. A displayed score, proposal digest, or capability
+flag is evidence only and cannot be transformed into authorization or a commit request.
+
 ## Modules
 
 | Module | Responsibility | Must not do |
@@ -213,7 +281,7 @@ rationale. The latter remain stored only as explicitly untrusted diagnostics.
 | `ports` | Define clock, patch, planning, rendering/projecting, export, and revision boundaries | Implement vendor behavior |
 | `repositories` | Store immutable revisions, history stacks, and audit events | Skip CAS or validation orchestration |
 | `infrastructure` | Provide production adapters such as UTC/monotonic clocks and opt-in OpenAI requirement extraction | Own domain policy or obtain write-side capabilities |
-| `frontend` | Admit versioned Render IR, build/dispose Three.js resources, and provide read-only interaction | Read raw World Model JSON, generate Patch operations, access revisions, authorize, or commit |
+| `frontend` | Separately admit Proposal Preview, BenchmarkReport, and Render IR contracts; build/dispose Three.js resources; provide read-only/advisory interaction | Read raw World Model JSON, mix Proposal with authoritative Render IR, generate Patch operations, access repositories, authorize, or commit |
 
 ## Validation levels
 
@@ -250,9 +318,11 @@ right-handed Z-up frame.
 
 Render IR contains bounds, floors, and explicit room surface, wall extrusion, and
 door/window panel objects with stable entity IDs. It is a fresh standard-JSON derivative,
-not a second World Model. The viewer provides camera control, floor visibility,
-selection, and inspection only. Names remain untrusted display strings and are inserted
-as React text; the IR cannot provide HTML, URLs, textures, materials, colors, or shaders.
+not a second World Model. The World Model Explorer provides top/isometric/fit camera
+control, floor visibility, entity search/tree selection, structured inspection, and
+debug downloads of the already-derived SVG/Render IR only. Names remain untrusted display
+strings and are inserted as React text; the IR cannot provide HTML, URLs, textures,
+materials, colors, or shaders.
 
 Scene teardown stops the animation loop, removes listeners, disconnects the
 `ResizeObserver`, disposes controls, geometry, materials, textures, renderer lists, and

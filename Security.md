@@ -20,6 +20,7 @@ The main untrusted inputs are:
 - versioned benchmark datasets and external reference annotations;
 - proposal `provenance` and `rationale` strings;
 - scenario data supplied to the evaluation runner;
+- versioned Proposal Preview and imported BenchmarkReport JSON loaded by the browser;
 - Render IR JSON loaded by the browser;
 - floor and entity names rendered as display text.
 
@@ -54,9 +55,10 @@ Benchmark annotations, proposal digests, metric success, and benchmark reports a
 detached evidence only. None is an `AgentPatchCommitRequest`, trusted audit identity,
 revision snapshot, authorization result, or permissible input to the commit path.
 
-Visualization is entirely on the read side. Render IR, scene selection, camera/floor
-visibility, and WebGL state are not `AgentPatchCommitRequest` values and cannot enter the
-authorization gateway or revision repository.
+Visualization is entirely on the read side. Proposal Preview state, benchmark imports,
+Render IR, scene selection, camera/floor visibility, and WebGL state are not
+`AgentPatchCommitRequest` values and cannot enter the authorization gateway or revision
+repository.
 
 ## Strict JSON boundary
 
@@ -121,6 +123,42 @@ Teardown stops the animation loop, removes DOM listeners, disconnects the
 `ResizeObserver`, disposes controls, geometries, materials, textures, renderer lists,
 and the renderer, then releases the WebGL context. These controls limit accidental
 resource retention but do not make a browser GPU process a trusted execution boundary.
+
+## Showcase browser boundary
+
+The Design Studio maintains two separate display modes with incompatible admission
+contracts:
+
+- **Detached Planning Sandbox** accepts only the versioned showcase/proposal-preview
+  contract. It renders proposal rectangles in a frontend-only diagram and displays the
+  three required advisory labels. It does not call `WorldModelRenderIRProjector`.
+- **Authoritative World Model** accepts only `RenderIR 1.0.0`, retains model ID/revision,
+  and uses the existing read-only Three.js path. It never overlays proposal rectangles.
+
+The parsers mutually reject the other contract. The proposal parser enforces exact
+fields and version, finite values, room/reference/count budgets, boundary containment,
+non-overlap, evidence consistency, and a deeply frozen result. The failure scenario has
+no proposal payload; the UI renders the stable `PLANNING_SOLVER_FAILED` code and does not
+silently fall back or invent geometry.
+
+The Benchmark Lab loads a committed same-origin report by default and admits local file
+imports only through the exact `BenchmarkReport 1.0.0` parser. Admission rejects unknown
+or missing fields, invalid system/case/trial identities, non-finite timing or scores,
+inconsistent denominator/coverage/sample counts, and resource-budget violations before
+display. The admitted report is deeply frozen. Charts have text equivalents, but neither
+chart state nor a high score creates authorization, model validity, or commit authority.
+
+`GET /v1/capabilities` exposes only three explicitly configured booleans. It does not
+read or return API keys, model names, environment values, provider errors, or endpoint
+details. This release's Studio has no live-provider control or live planning endpoint,
+regardless of those diagnostic/future-discovery values. A true value is not an authentication
+assertion, an authorization decision, a capability token, or permission to imply live behavior.
+
+Recorded showcase fixtures are labeled as deterministic replay and are never presented
+as live OpenAI output. They contain typed observable outputs, strategies, counts, metrics,
+and stable failure codes; the UI explicitly states that runtime was not retained. They contain
+no prompt, raw provider response, rationale, tool transcript, or chain-of-thought. Static files
+still require trusted build provenance and ordinary deployment controls against asset replacement.
 
 ## Constraint-solver boundary
 
@@ -355,6 +393,8 @@ Before exposing the prototype to untrusted internet traffic, a deployment must a
   credential lifecycle management, and legal review of vendor data-retention/residency terms.
 - benchmark fixture provenance/integrity controls and access-controlled report storage,
   retention, and deletion.
+- a hardened production web build and reverse proxy; `run_showcase.sh` is a local
+  developer/demo launcher, not a production process supervisor.
 
 The same-origin client check does not replace server-side authentication, authorization,
 CSP, or resource quotas, and the current viewer does not make `/v1/models/render/ir`
@@ -365,3 +405,9 @@ absent from the World Model or that a wall has been authoritatively cut.
 Do not expose or broaden the real LLM adapter, expand its output kinds/data projection,
 broaden an authorization allowlist, or add a new agent write capability without a
 dedicated security review and adversarial regression tests.
+
+The showcase does not claim building-code compliance, public-service readiness,
+automatic architectural correctness, or authoritative AI-generated geometry. Imported
+benchmark reports and local downloads are handled in browser memory; operators remain
+responsible for endpoint security, malware scanning where required, filesystem/browser
+download policy, and the provenance of any artifact they choose to inspect.

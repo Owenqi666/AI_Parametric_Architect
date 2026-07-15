@@ -16,19 +16,28 @@ export class SceneController {
   private readonly pointer = new THREE.Vector2();
   private readonly resizeObserver: ResizeObserver;
   private readonly onSelection: SelectionListener;
+  private readonly onContextFailure: (() => void) | undefined;
   private selectionHelper: THREE.Box3Helper | null = null;
+  private pointerDown: readonly [number, number] | null = null;
+  private currentView: "isometric" | "top" = "isometric";
   private disposed = false;
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
     private readonly renderIr: RenderIr,
     onSelection: SelectionListener,
+    onContextFailure?: () => void,
   ) {
     this.onSelection = onSelection;
+    this.onContextFailure = onContextFailure;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setClearColor(0x131718, 1);
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.05;
     this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.camera.up.set(0, 0, 1);
     this.built = buildWorldScene(renderIr);
     this.scene.add(this.built.root);
@@ -58,6 +67,7 @@ export class SceneController {
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(canvas);
+    canvas.addEventListener("pointerdown", this.handlePointerDown);
     canvas.addEventListener("pointerup", this.handlePointer);
     canvas.addEventListener("keydown", this.handleKeyDown);
     canvas.addEventListener("webglcontextlost", this.handleContextLost);
@@ -69,7 +79,7 @@ export class SceneController {
   setFloor(floorId: string | null): void {
     for (const [id, group] of this.built.floorGroups) group.visible = floorId === null || id === floorId;
     this.clearSelection();
-    this.fit("isometric", true);
+    this.fit(this.currentView, true);
   }
 
   selectEntity(entityId: string | null): void {
@@ -93,11 +103,17 @@ export class SceneController {
   }
 
   viewIsometric(): void {
+    this.currentView = "isometric";
     this.fit("isometric", true);
   }
 
   viewTop(): void {
+    this.currentView = "top";
     this.fit("top", true);
+  }
+
+  fitVisible(): void {
+    this.fit(this.currentView, true);
   }
 
   dispose(): void {
@@ -105,6 +121,7 @@ export class SceneController {
     this.disposed = true;
     this.renderer.setAnimationLoop(null);
     this.resizeObserver.disconnect();
+    this.canvas.removeEventListener("pointerdown", this.handlePointerDown);
     this.canvas.removeEventListener("pointerup", this.handlePointer);
     this.canvas.removeEventListener("keydown", this.handleKeyDown);
     this.canvas.removeEventListener("webglcontextlost", this.handleContextLost);
@@ -123,6 +140,9 @@ export class SceneController {
   };
 
   private readonly handlePointer = (event: PointerEvent): void => {
+    const start = this.pointerDown;
+    this.pointerDown = null;
+    if (start && Math.hypot(event.clientX - start[0], event.clientY - start[1]) > 5) return;
     const rectangle = this.canvas.getBoundingClientRect();
     if (rectangle.width <= 0 || rectangle.height <= 0) return;
     this.pointer.set(
@@ -138,6 +158,10 @@ export class SceneController {
     this.selectEntity(typeof entity?.userData.entityId === "string" ? entity.userData.entityId : null);
   };
 
+  private readonly handlePointerDown = (event: PointerEvent): void => {
+    this.pointerDown = [event.clientX, event.clientY];
+  };
+
   private readonly handleKeyDown = (event: KeyboardEvent): void => {
     if (event.key === "Escape") this.clearSelection();
   };
@@ -145,6 +169,7 @@ export class SceneController {
   private readonly handleContextLost = (event: Event): void => {
     event.preventDefault();
     this.clearSelection();
+    this.onContextFailure?.();
   };
 
   private resize(): void {

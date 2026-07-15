@@ -3,15 +3,30 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Parametric Architect — World Model Viewer",
-  description: "A read-only Three.js projection of a validated JSON architectural world model.",
+  title: {
+    default: "AI Parametric Architect Studio",
+    template: "%s — AI Parametric Architect Studio",
+  },
+  description: "A safe, constraint-aware world-model planning environment for architectural AI.",
+  openGraph: {
+    title: "AI Parametric Architect Studio",
+    description:
+      "Natural-language intent, detached constraint planning, reproducible benchmarks, and an authoritative read-only World Model.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Parametric Architect Studio",
+    description:
+      "Safe architectural AI planning with detached proposals, reproducible evidence, and a read-only World Model.",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  colorScheme: "dark",
-  themeColor: "#131718",
+  colorScheme: "light",
+  themeColor: "#171c1d",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
