@@ -21,6 +21,7 @@ dependencies = [
 
 [project.scripts]
 ai-architect = "ai_parametric_architect.cli:main"
+ai-architect-benchmark = "ai_parametric_architect.benchmark.cli:main"
 
 [dependency-groups]
 dev = [

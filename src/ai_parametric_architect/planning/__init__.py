@@ -22,6 +22,11 @@ from ai_parametric_architect.planning.rules import (
     EQUAL_AREA_STABLE_ORDER_STRATEGY,
     RuleBasedFloorPlanPlanner,
 )
+from ai_parametric_architect.planning.spatial_baseline import (
+    RULE_BASED_SPATIAL_STRATEGY,
+    RuleBasedSpatialFloorPlanPlanner,
+    RuleBasedSpatialPolicy,
+)
 
 if TYPE_CHECKING:
     from ai_parametric_architect.planning.solver import (
@@ -65,6 +70,7 @@ __all__ = [
     "FLOOR_PLAN_SCHEMA_VERSION",
     "RULE_BASED_PLANNER_PROVENANCE",
     "RULE_BASED_PLANNER_RATIONALE",
+    "RULE_BASED_SPATIAL_STRATEGY",
     "SOLVED_FLOOR_PLAN_SCHEMA_VERSION",
     "AgentPlanningPipeline",
     "ConstraintFloorPlanPlanner",
@@ -81,4 +87,6 @@ __all__ = [
     "RuleBasedFloorPlanPlanner",
     "RuleBasedPlanner",
     "RuleBasedRequirementParser",
+    "RuleBasedSpatialFloorPlanPlanner",
+    "RuleBasedSpatialPolicy",
 ]

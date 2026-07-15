@@ -7,19 +7,26 @@ the prototype and the controls a production deployment must add around them.
 ## Assets and trust boundaries
 
 The authoritative asset is an immutable revision of the JSON world model. Plans,
-LLM responses, solver proposals, evaluation reports, traces, Shapely objects, rendered
-SVG, Render IR, and Three.js scenes are derived or advisory values; none of them is an
-authority to mutate or commit the world model.
+LLM responses, solver proposals, evaluation/benchmark reports, benchmark datasets and
+reference annotations, traces, Shapely objects, rendered SVG, Render IR, and Three.js
+scenes are derived, input, or advisory values; none of them is an authority to mutate or
+commit the world model.
 
 The main untrusted inputs are:
 
 - HTTP and CLI JSON documents;
 - patch operations and proposal metadata produced by people or agents;
 - natural-language requirements and LLM suggestions;
+- versioned benchmark datasets and external reference annotations;
 - proposal `provenance` and `rationale` strings;
 - scenario data supplied to the evaluation runner;
 - Render IR JSON loaded by the browser;
 - floor and entity names rendered as display text.
+
+The benchmark output path is trusted local-operator configuration, not model input. The
+CLI refuses to overwrite either input artifact but can replace another accessible regular
+file; it is not a filesystem sandbox and does not provide symlink-race protection. Run it
+with least privilege, a dedicated output directory, and deployment-level path/symlink policy.
 
 Authenticated application context, including `TrustedAuditIdentity` and tenant HMAC
 keys, must be supplied by trusted infrastructure. It must never be reconstructed from
@@ -42,6 +49,10 @@ PatchProposal (untrusted)
 Agents and LLM providers have no repository, patch-application, validation-bypass, or
 commit capability. An evaluation success is an observation only and is deliberately
 not accepted by the authorization gateway as a commit credential.
+
+Benchmark annotations, proposal digests, metric success, and benchmark reports are also
+detached evidence only. None is an `AgentPatchCommitRequest`, trusted audit identity,
+revision snapshot, authorization result, or permissible input to the commit path.
 
 Visualization is entirely on the read side. Render IR, scene selection, camera/floor
 visibility, and WebGL state are not `AgentPatchCommitRequest` values and cannot enter the
@@ -154,7 +165,8 @@ guarantee.
 ## Network LLM boundary
 
 Final Enhancement Priority 2 adds an opt-in OpenAI Responses adapter under
-`infrastructure/llm`. It is not used by the default composition, CLI, or FastAPI routes.
+`infrastructure/llm`. It is not used by the normal default composition or FastAPI routes,
+and the benchmark CLI remains offline unless `--openai-model` is explicitly supplied.
 The real adapter accepts only the untrusted natural-language requirement and can return
 only a locally validated `DesignIntent`; FloorPlan and Patch output kinds fail before
 network I/O. It never receives a World Model, revision, geometry, repository handle,
@@ -206,6 +218,65 @@ observes optional preferences, and the stability score is a normalized compariso
 not a cryptographic reproducibility guarantee. None establishes code compliance,
 accessibility, egress safety, geometric validity of authoritative World Model data,
 or authorization to commit.
+
+## Planning-benchmark boundary
+
+Final Enhancement Priority 3 adds a top-level API that is read-only with respect to the
+World Model/repository, plus an outer CLI that writes only the selected report file.
+The core dataset/model/runner modules do not import a provider, OR-Tools solver, system
+clock/random source, repository, Patch engine, validator, revision service,
+authorization policy, renderer, or commit path. Parsers, planners, and a monotonic clock
+are injected by composition. Importing the top-level benchmark package therefore does
+not initialize a network provider or load OR-Tools.
+
+Dataset and reference annotations are separate strict `1.0.0` JSON contracts. The
+dataset contains only case IDs, sorted tags, and untrusted requirement text; annotations
+contain external expected intents/constraints and must bind the exact dataset ID/version
+with one-to-one case coverage. Unknown/missing fields, duplicate keys, non-standard or
+non-finite numbers, malformed identities/order, and over-budget inputs fail before Agent
+execution. Each file is capped at 1 MiB, each dataset at 64 cases, and each requirement
+at 16 KiB. Canonical SHA-256 artifact digests detect content differences for
+reproducibility, but are not signatures, authenticity proofs, World Model IDs, or
+authorization evidence. Deployments that accept externally supplied fixtures still need
+artifact provenance, access control, and integrity/signature policy.
+
+`BenchmarkBudget` rejects over-limit case/system/trial/attempt products before any Agent
+or clock call. The CLI narrows that budget to 16 cases, 3 systems, 4 trials, and 192 total
+attempts, refuses to overwrite either input artifact, and requires an existing output
+parent. These in-process limits do not replace process CPU/memory limits, solver
+cancellation, network cost controls, filesystem quotas, or output retention policy.
+
+Reference answers never enter the end-to-end parser: that track receives only dataset
+requirement text, while the separate oracle-intent track sends the reference intent
+directly to the same planner. This prevents label leakage into intent extraction and
+isolates planner behavior. End-to-end spatial metrics cover only proposals whose parsed
+intent exactly matches the reference; all binary success/validity metrics retain every
+attempt in the denominator, and every metric/runtime declares its covered-attempt and
+sample counts. Missing coverage is explicit rather than silently dropped.
+
+Serialized reports use an allowlist. They retain bounded declared artifact/system identity and
+configuration, canonical digests, aggregate counts/scores, case/system/trial keys,
+boolean results, proposal digests, nanosecond timings, and known failure
+`stage/code/path`. They exclude raw requirements, reference intents/constraints, typed
+intent/proposal bodies, provider output/messages, prompts, exception text/details,
+and dedicated credential fields. Allowlisted identifiers, provider/model names, and
+metric context are caller-supplied metadata: they can still be sensitive and must never
+contain secrets. Any artifact/proposal digest or report score is only evidence and cannot
+be converted into authorization or committed geometry. These SHA-256 digests are unkeyed,
+not anonymization; low-entropy content may be guessable and both digests and metadata
+require access control and retention policy.
+
+The CLI composes the deterministic rule-spatial and CP-SAT systems by default. The real
+OpenAI + CP-SAT system is included only with `--openai-model`; the SDK obtains its key
+from `OPENAI_API_KEY` or an equivalent managed secret channel, never a CLI/config field.
+This documentation does not claim that a real-network benchmark was run. Enabling one
+requires the same egress, approved-model, rate/cost, credential, logging, retention, and
+vendor-review controls as any other real provider use.
+
+Benchmark reports, reference annotations, and rule/solver/LLM proposals never enter the
+World Model, revision CAS, trusted audit, authorization, affected-entity verification,
+validation, or commit boundaries. Priority 3 neither weakens nor modifies those existing
+controls.
 
 ## Agent authorization
 
@@ -282,6 +353,8 @@ Before exposing the prototype to untrusted internet traffic, a deployment must a
 - a persistence migration and recovery strategy;
 - provider egress allowlisting, cost/rate/concurrency controls, approved model snapshots,
   credential lifecycle management, and legal review of vendor data-retention/residency terms.
+- benchmark fixture provenance/integrity controls and access-controlled report storage,
+  retention, and deletion.
 
 The same-origin client check does not replace server-side authentication, authorization,
 CSP, or resource quotas, and the current viewer does not make `/v1/models/render/ir`

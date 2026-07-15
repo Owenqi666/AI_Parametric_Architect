@@ -2,7 +2,7 @@
 
 ## Goals and non-goals
 
-The deterministic core proves two paths:
+The deterministic core proves the following paths:
 
 ```text
 JSON document -> structural validation -> semantic/geometry validation -> SVG
@@ -14,14 +14,16 @@ ValidationIssue -> symbolic ConstraintResolutionPlan (no automatic edit)
 typed LLM suggestion -> existing Agent ports -> proposal values only
 untrusted requirement -> OpenAI strict output -> local DesignIntent validation -> existing CP-SAT detached proposal
 Scenario -> Agent pipeline -> detached full validation -> evaluation metrics
+versioned dataset + external annotations -> two-track benchmark -> redacted detached report
 observable JSON boundaries -> tenant/domain HMAC + safe metadata -> AgentTrace
 ```
 
 The provider-neutral LLM contract retains its deterministic Mock. Final Enhancement
 Priority 2 adds an explicitly enabled OpenAI Responses infrastructure adapter for
 DesignIntent extraction only; default composition remains deterministic and offline.
-Priorities 1–2 do not add World Model editing, proposal realization, automatic geometry
-correction, DXF, or IFC export.
+Priority 3 adds a World-Model/repository-read-only benchmark core and an offline-default
+report-writing CLI; Priorities 1–3 do not add World Model editing, proposal realization,
+automatic geometry correction, DXF, or IFC export.
 
 ## Architectural style
 
@@ -44,18 +46,25 @@ typed LLM adapters          detached evaluation
 agent_trace observes typed JSON boundaries by hash only; it is not in the write path
 
 validated rendering path: renderer adapter -> Render IR -> frontend Three.js adapter
+
+detached comparison path: benchmark CLI -> injected parsers/planners -> redacted report
 ```
 
 Dependency rules:
 
-1. Persisted JSON is authoritative. Runtime objects are disposable projections.
+1. Persisted JSON World Model revisions are authoritative for model state. Other
+   persisted JSON artifacts, including benchmark fixtures/reports, retain detached
+   identities and no World Model authority; runtime objects are disposable projections.
 2. Domain contracts do not import FastAPI, Shapely, SVG, OpenAI, or IFC libraries.
 3. Shapely objects stay inside the geometry engine boundary.
 4. Validators and renderers are read-only and never normalize or repair input
    silently.
 5. API and CLI adapters translate transport concerns only; orchestration belongs
    to application use cases.
-6. Every derived output is reproducible from a model revision.
+6. World-Model-derived render/export output is reproducible from a model revision.
+   Proposals, evaluations, and benchmarks instead use their own typed inputs and
+   explicit version/rules/configuration identity; benchmark artifacts add canonical
+   content digests.
 7. One `StrictJsonTreeGuard` definition protects API, validation, editing, and
    evaluation boundaries. Only alias-free standard JSON trees may enter model
    snapshots, patch values, or audit details.
@@ -83,6 +92,10 @@ Dependency rules:
 17. Vendor SDK and network imports are confined to `infrastructure/llm`. The real provider
     accepts no revision or World Model and supports only `DesignIntent`; all other output
     kinds fail before a request is sent.
+18. The benchmark top-level surface is read-only. Dataset, annotation, proposal, and report
+    values are detached evidence; none is a World Model/revision value, authorization
+    result, or commit input. The core runner receives providers, planners, and clocks only
+    through narrow injected ports and has no world-write dependency.
 
 ## JSON model strategy
 
@@ -171,10 +184,10 @@ untrusted PatchProposal + DesignIntent
   -> CAS commit with TrustedAuditIdentity
 ```
 
-The gateway accepts an explicit typed commit request, not an `EvaluationReport` or an
-arbitrary proposal-shaped mapping. Audit identity travels on a trusted application
-channel and is never inferred from LLM-controlled provenance or rationale. The latter
-remain stored only as explicitly untrusted diagnostics.
+The gateway accepts an explicit typed commit request, not an `EvaluationReport`,
+`BenchmarkReport`, or arbitrary proposal-shaped mapping. Audit identity travels on a
+trusted application channel and is never inferred from LLM-controlled provenance or
+rationale. The latter remain stored only as explicitly untrusted diagnostics.
 
 ## Modules
 
@@ -196,9 +209,10 @@ remain stored only as explicitly untrusted diagnostics.
 | `renderer` | Project validated models into deterministic SVG or Render IR | Invent, persist, or commit geometry |
 | `application` | Orchestrate validation, rendering, patch, and restoration use cases | Contain transport logic |
 | `backend` | FastAPI transport adapter | Contain validation rules |
+| `benchmark` | Load separate versioned requirements/references and produce detached two-track reports | Read or mutate World Model state, authorize, validate, patch, revise, or commit |
 | `ports` | Define clock, patch, planning, rendering/projecting, export, and revision boundaries | Implement vendor behavior |
 | `repositories` | Store immutable revisions, history stacks, and audit events | Skip CAS or validation orchestration |
-| `infrastructure` | Provide production adapters such as the UTC clock and opt-in OpenAI requirement extraction | Own domain policy or obtain write-side capabilities |
+| `infrastructure` | Provide production adapters such as UTC/monotonic clocks and opt-in OpenAI requirement extraction | Own domain policy or obtain write-side capabilities |
 | `frontend` | Admit versioned Render IR, build/dispose Three.js resources, and provide read-only interaction | Read raw World Model JSON, generate Patch operations, access revisions, authorize, or commit |
 
 ## Validation levels
@@ -453,8 +467,9 @@ allowlist remains unchanged.
 Promoting a selected placement into authoritative geometry is a later capability. It
 will require a new typed realization contract and authorization review, followed by
 the unchanged Patch -> complete Validation -> CAS Commit path. Task 7.2 evaluates
-detached placements but does not realize them. Task 7.3 knowledge retrieval, real
-provider adapters, benchmarks, and the proposal-evaluation loop remain later work.
+detached placements but does not realize them. The restricted real provider adapter and
+detached benchmark are now implemented; Task 7.3 knowledge retrieval and the Task 7.6
+proposal-evaluation loop remain later work.
 
 ## Constraint Reasoning boundary: Task 4
 
@@ -663,6 +678,92 @@ serializable. The evaluator never runs an Agent/provider, accesses a repository,
 applies a Patch, invokes model validation, authorizes an operation, or commits. Its
 report is rejected by both the typed authorization request and the gateway itself.
 
+## Planning benchmark boundary: Final Enhancement Priority 3
+
+The top-level `ai_parametric_architect.benchmark` package exposes immutable data/report
+contracts and a read-only `BenchmarkRunner`. Importing that surface does not load
+OR-Tools. The core `data.py`, `models.py`, and `runner.py` modules are provider-, solver-,
+wall-clock-, randomness-, repository-, Patch-, validation-, revision-, authorization-,
+and commit-neutral. Actual Agent implementations and the monotonic clock are supplied
+by `composition`; `benchmark/cli.py` is only the outer adapter.
+
+Benchmark inputs remain separate by design:
+
+```text
+dataset 1.0.0: case ID + sorted tags + untrusted requirement text
+annotation set 1.0.0: case ID + expected intent + expected constraints
+                         |
+                         +-- bound to exact dataset ID/version and one-to-one case coverage
+```
+
+Both strict contracts reject unknown/missing fields, malformed standard JSON, duplicate
+keys, non-finite values, invalid ordering/identities, and over-budget files or values.
+Dataset and annotation identities have independent semantic versions and canonical
+SHA-256 content digests. A digest is a reproducibility fingerprint, not a signature,
+World Model identity, authorization result, or provenance proof. The loaders cap each
+file at 1 MiB, datasets at 64 cases, and each requirement at 16 KiB. Before any Agent or
+clock call, `BenchmarkBudget` validates case, system, trial, and total-attempt counts;
+the CLI fixes those maxima at 16, 3, 4, and 192 respectively and serializes the selected
+budget into the report.
+
+Built-in composition provides three system shapes, with frozen descriptors that record
+system/Agent versions, planner strategy, rules version, random seed, and execution mode;
+the runner can also accept other implementations of its injected narrow ports:
+
+- `rule-spatial-v2`: deterministic `RuleBasedRequirementParser` plus the independent
+  `RuleBasedSpatialFloorPlanPlanner`;
+- `cp-sat-v2`: the same deterministic parser plus `ConstraintFloorPlanPlanner`;
+- `openai-cp-sat-v2`: the explicit OpenAI requirement adapter plus the same CP-SAT
+  planner, additionally recording provider/model/prompt metadata.
+
+The new rule spatial baseline is independent of OR-Tools. It reuses the equal-area
+allocation rule and lays rooms in stable intent order along one bounded horizontal strip,
+producing a solved `FloorPlanProposal v2` under strategy `rule-based-single-row-v1`.
+The pre-existing semantic-only v1 `RuleBasedFloorPlanPlanner` and
+`equal-area-stable-order-v1` pipeline are unchanged; the benchmark baseline does not
+replace Task 3 Patch planning.
+
+For every system/case/trial, the runner produces two observations:
+
+```text
+end_to_end:    dataset requirement -> injected parser -> parsed intent -> same planner
+oracle_intent: annotation expected intent ---------------------------> same planner
+```
+
+The reference annotation is never supplied to the end-to-end parser. `intent_exact`
+records exact agreement with the reference; the oracle track isolates planner behavior
+from requirement understanding. The standard fixture deliberately places positional
+relation clauses after explicit room lists: this removes room extraction as a confounder
+while exposing the deterministic parser's known failure to extract spatial constraints.
+The oracle track then compares planners against those same external constraints.
+
+Intent accuracy, planning success, and plan validity include every configured attempt in
+their denominators, including parse/plan failures. Constraint satisfaction, spatial
+efficiency, circulation, and repeated-run stability include explicit attempt, covered-
+attempt, sample, reason, and coverage fields. End-to-end spatial metrics admit only
+successful plans whose parsed intent exactly matches the reference, preventing a system
+from receiving a geometry score for solving a different problem. Stability groups
+repeated proposals by case and counts comparison pairs. Parse/plan/total nanosecond
+summaries expose minimum, nearest-rank median and p95, maximum, total, and coverage;
+`oracle_intent` has no parse timing.
+
+The serialized report is an allowlist, not a transcript. It retains artifact IDs,
+versions/digests, budget and metric context, bounded declared system metadata, aggregate metrics,
+case/system/trial keys, boolean outcomes, proposal SHA-256 digests, timing, and known
+failure `stage/code/path`. It omits raw requirements, expected reference values, typed
+intent/proposal objects, provider output/messages, prompts, exception text/details, and
+credential fields. Allowlisted IDs/model/context values are caller-declared metadata,
+not a secret channel, and operators must not place secrets there. The default CLI composes
+only the first two offline systems. Supplying
+`--openai-model` explicitly adds the third and lets the SDK obtain credentials from
+`OPENAI_API_KEY`; no real-network benchmark result is claimed by this documentation.
+
+`BenchmarkReport`, reference annotations, and all planner proposals remain detached
+evidence. Neither the runner nor CLI turns them into an `AgentPatchCommitRequest`, and
+the authorization gateway rejects them. Priority 3 therefore leaves the existing model
+validation, revision CAS, authorization policy, affected-ID verification, audit, and
+commit boundaries unchanged.
+
 ## Observable Agent Trace boundary: Task 6.3
 
 `AgentTraceRecorder` accepts observable JSON values, computes deterministic canonical
@@ -737,6 +838,10 @@ sets remain mapping metadata, never an alternative geometry source.
 - Planning-metric tests cover explicit threshold contexts, all four normalized scores,
   legacy/non-repeated non-applicability, all-pairs stability, deterministic JSON,
   CP-SAT repeated-run comparability, non-mutation, and authority-neutral dependencies.
+- Benchmark tests cover strict separate artifacts, digest stability, exact annotation
+  coverage, preflight budgets, both tracks and all-attempt denominators, metric/timing
+  coverage, independent rule/CP-SAT systems, offline-default CLI behavior, report
+  redaction, no OR-Tools top-level import, and rejection at authorization/commit boundaries.
 - Agent-trace tests cover canonical tenant/domain HMAC, key rotation, strict safe metadata,
   UTC normalization, content/chain-of-thought exclusion, trace/audit correlation, clock
   injection, immutability, and dependency rules.

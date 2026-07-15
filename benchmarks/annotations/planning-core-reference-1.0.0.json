@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0.0",
+  "annotation_set_id": "planning-core-reference",
+  "annotation_set_version": "1.0.0",
+  "dataset_id": "planning-core",
+  "dataset_version": "1.0.0",
+  "annotations": [
+    {
+      "case_id": "residential_001_south_adjacent",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 80,
+        "rooms": ["living", "kitchen", "bedroom", "bathroom"],
+        "orientation": "south",
+        "spatial_constraints": [
+          {
+            "source_room_type": "kitchen",
+            "relation": "adjacent_to",
+            "target_room_type": "living",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "kitchen",
+          "relation": "adjacent_to",
+          "target_room_type": "living",
+          "required": true
+        }
+      ]
+    },
+    {
+      "case_id": "residential_002_north_adjacent_zh",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 72,
+        "rooms": ["living", "kitchen", "bedroom"],
+        "orientation": "north",
+        "spatial_constraints": [
+          {
+            "source_room_type": "kitchen",
+            "relation": "adjacent_to",
+            "target_room_type": "living",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "kitchen",
+          "relation": "adjacent_to",
+          "target_room_type": "living",
+          "required": true
+        }
+      ]
+    },
+    {
+      "case_id": "residential_003_separated",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 72,
+        "rooms": ["living", "bedroom", "bathroom"],
+        "orientation": null,
+        "spatial_constraints": [
+          {
+            "source_room_type": "bedroom",
+            "relation": "separated_from",
+            "target_room_type": "living",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "bedroom",
+          "relation": "separated_from",
+          "target_room_type": "living",
+          "required": true
+        }
+      ]
+    },
+    {
+      "case_id": "residential_004_east_direction",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 88,
+        "rooms": ["living", "kitchen", "bedroom", "bathroom"],
+        "orientation": "east",
+        "spatial_constraints": [
+          {
+            "source_room_type": "kitchen",
+            "relation": "east_of",
+            "target_room_type": "living",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "kitchen",
+          "relation": "east_of",
+          "target_room_type": "living",
+          "required": true
+        }
+      ]
+    },
+    {
+      "case_id": "residential_005_west_direction_zh",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 92,
+        "rooms": ["living", "kitchen", "bedroom", "bathroom"],
+        "orientation": "west",
+        "spatial_constraints": [
+          {
+            "source_room_type": "bedroom",
+            "relation": "north_of",
+            "target_room_type": "living",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "bedroom",
+          "relation": "north_of",
+          "target_room_type": "living",
+          "required": true
+        }
+      ]
+    },
+    {
+      "case_id": "residential_006_south_separated_zh",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 66,
+        "rooms": ["living", "bathroom", "study"],
+        "orientation": "south",
+        "spatial_constraints": [
+          {
+            "source_room_type": "study",
+            "relation": "separated_from",
+            "target_room_type": "living",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "study",
+          "relation": "separated_from",
+          "target_room_type": "living",
+          "required": true
+        }
+      ]
+    },
+    {
+      "case_id": "residential_007_near",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 72,
+        "rooms": ["dining", "kitchen", "bedroom"],
+        "orientation": null,
+        "spatial_constraints": [
+          {
+            "source_room_type": "dining",
+            "relation": "near",
+            "target_room_type": "kitchen",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "dining",
+          "relation": "near",
+          "target_room_type": "kitchen",
+          "required": true
+        }
+      ]
+    },
+    {
+      "case_id": "residential_008_multi_direction_zh",
+      "expected_intent": {
+        "building_type": "house",
+        "area": 75,
+        "rooms": ["living", "kitchen", "bedroom"],
+        "orientation": "south",
+        "spatial_constraints": [
+          {
+            "source_room_type": "bedroom",
+            "relation": "west_of",
+            "target_room_type": "living",
+            "required": true
+          },
+          {
+            "source_room_type": "kitchen",
+            "relation": "adjacent_to",
+            "target_room_type": "living",
+            "required": true
+          }
+        ]
+      },
+      "expected_constraints": [
+        {
+          "source_room_type": "bedroom",
+          "relation": "west_of",
+          "target_room_type": "living",
+          "required": true
+        },
+        {
+          "source_room_type": "kitchen",
+          "relation": "adjacent_to",
+          "target_room_type": "living",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

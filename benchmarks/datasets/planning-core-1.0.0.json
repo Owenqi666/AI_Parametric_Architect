@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "planning-core",
+  "dataset_version": "1.0.0",
+  "cases": [
+    {
+      "case_id": "residential_001_south_adjacent",
+      "tags": ["adjacency", "english", "orientation", "residential"],
+      "input_requirement": "Design a south-facing 80 sqm house with a living room, kitchen, bedroom, and bathroom; make the first two spaces adjacent."
+    },
+    {
+      "case_id": "residential_002_north_adjacent_zh",
+      "tags": ["adjacency", "chinese", "orientation", "residential"],
+      "input_requirement": "设计一套朝北的 72 平方米住宅，包含客厅、厨房和一间卧室；前两个空间必须相邻。"
+    },
+    {
+      "case_id": "residential_003_separated",
+      "tags": ["english", "residential", "separation"],
+      "input_requirement": "Plan a 72 sqm home with a living room, bedroom, and bathroom; keep the second space separated from the first."
+    },
+    {
+      "case_id": "residential_004_east_direction",
+      "tags": ["direction", "english", "orientation", "residential"],
+      "input_requirement": "Create an east-facing 88 sqm house with a living room, kitchen, bedroom, and bathroom; place the second space east of the first."
+    },
+    {
+      "case_id": "residential_005_west_direction_zh",
+      "tags": ["chinese", "direction", "orientation", "residential"],
+      "input_requirement": "设计一套朝西的 92 平方米住宅，包含客厅、厨房、卧室和卫生间；第三个空间应位于第一个空间北侧。"
+    },
+    {
+      "case_id": "residential_006_south_separated_zh",
+      "tags": ["chinese", "orientation", "residential", "separation"],
+      "input_requirement": "规划一套朝南的 66 平方米住宅，包含客厅、卫生间和书房；第三个空间需与第一个空间分隔。"
+    },
+    {
+      "case_id": "residential_007_near",
+      "tags": ["english", "proximity", "residential"],
+      "input_requirement": "Plan a 72 sqm home with a dining room, kitchen, and bedroom; keep the first space near the second."
+    },
+    {
+      "case_id": "residential_008_multi_direction_zh",
+      "tags": ["adjacency", "chinese", "direction", "orientation", "residential"],
+      "input_requirement": "创建一套朝南的 75 平方米住宅，包含客厅、厨房和卧室；让第二个空间与第一个相邻，并使第三个空间位于第一个西侧。"
+    }
+  ]
+}
