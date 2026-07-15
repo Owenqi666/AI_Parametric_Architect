@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "model_id": "mdl_simple_house",
+  "revision": 0,
+  "units": {
+    "length": "m",
+    "angle": "degree"
+  },
+  "coordinate_system": {
+    "type": "local_cartesian",
+    "handedness": "right",
+    "up_axis": "Z",
+    "origin": [0.0, 0.0, 0.0]
+  },
+  "geometry_settings": {
+    "linear_tolerance": 0.000001
+  },
+  "root_building_id": "bld_simple_house",
+  "entities": {
+    "buildings": {
+      "bld_simple_house": {
+        "id": "bld_simple_house",
+        "entity_type": "building",
+        "name": "Simple House"
+      }
+    },
+    "floors": {
+      "flr_ground": {
+        "id": "flr_ground",
+        "entity_type": "floor",
+        "name": "Ground Floor",
+        "building_id": "bld_simple_house",
+        "elevation": 0.0,
+        "height": 2.8
+      }
+    },
+    "rooms": {
+      "rom_living": {
+        "id": "rom_living",
+        "entity_type": "room",
+        "name": "Living Room",
+        "floor_id": "flr_ground",
+        "usage": "living",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [
+            [0.1, 0.1],
+            [7.9, 0.1],
+            [7.9, 5.9],
+            [0.1, 5.9],
+            [0.1, 0.1]
+          ],
+          "holes": []
+        }
+      }
+    },
+    "walls": {
+      "wal_south": {
+        "id": "wal_south",
+        "entity_type": "wall",
+        "name": "South Wall",
+        "floor_id": "flr_ground",
+        "axis": {
+          "type": "Segment2D",
+          "start": [0.0, 0.0],
+          "end": [8.0, 0.0]
+        },
+        "thickness": 0.2,
+        "height": 2.8,
+        "base_offset": 0.0,
+        "alignment": "center"
+      },
+      "wal_east": {
+        "id": "wal_east",
+        "entity_type": "wall",
+        "name": "East Wall",
+        "floor_id": "flr_ground",
+        "axis": {
+          "type": "Segment2D",
+          "start": [8.0, 0.0],
+          "end": [8.0, 6.0]
+        },
+        "thickness": 0.2,
+        "height": 2.8,
+        "base_offset": 0.0,
+        "alignment": "center"
+      },
+      "wal_north": {
+        "id": "wal_north",
+        "entity_type": "wall",
+        "name": "North Wall",
+        "floor_id": "flr_ground",
+        "axis": {
+          "type": "Segment2D",
+          "start": [8.0, 6.0],
+          "end": [0.0, 6.0]
+        },
+        "thickness": 0.2,
+        "height": 2.8,
+        "base_offset": 0.0,
+        "alignment": "center"
+      },
+      "wal_west": {
+        "id": "wal_west",
+        "entity_type": "wall",
+        "name": "West Wall",
+        "floor_id": "flr_ground",
+        "axis": {
+          "type": "Segment2D",
+          "start": [0.0, 6.0],
+          "end": [0.0, 0.0]
+        },
+        "thickness": 0.2,
+        "height": 2.8,
+        "base_offset": 0.0,
+        "alignment": "center"
+      }
+    },
+    "doors": {
+      "dor_entry": {
+        "id": "dor_entry",
+        "entity_type": "door",
+        "name": "Entry Door",
+        "host_wall_id": "wal_south",
+        "center_offset": 1.5,
+        "width": 0.9,
+        "height": 2.1,
+        "bottom_offset": 0.0
+      }
+    },
+    "windows": {
+      "win_south": {
+        "id": "win_south",
+        "entity_type": "window",
+        "name": "South Window",
+        "host_wall_id": "wal_south",
+        "center_offset": 5.0,
+        "width": 1.8,
+        "height": 1.2,
+        "bottom_offset": 0.9
+      }
+    },
+    "stairs": {}
+  },
+  "metadata": {
+    "description": "One-room fixture used by contract and integration tests."
+  },
+  "extensions": {}
+}

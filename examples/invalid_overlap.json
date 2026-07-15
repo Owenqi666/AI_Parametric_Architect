@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "model_id": "mdl_invalid_overlap",
+  "revision": 0,
+  "units": {"length": "m", "angle": "degree"},
+  "coordinate_system": {
+    "type": "local_cartesian",
+    "handedness": "right",
+    "up_axis": "Z",
+    "origin": [0.0, 0.0, 0.0]
+  },
+  "geometry_settings": {"linear_tolerance": 0.000001},
+  "root_building_id": "bld_overlap",
+  "entities": {
+    "buildings": {
+      "bld_overlap": {
+        "id": "bld_overlap",
+        "entity_type": "building",
+        "name": "Overlap Fixture"
+      }
+    },
+    "floors": {
+      "flr_ground": {
+        "id": "flr_ground",
+        "entity_type": "floor",
+        "name": "Ground Floor",
+        "building_id": "bld_overlap",
+        "elevation": 0.0,
+        "height": 3.0
+      }
+    },
+    "rooms": {
+      "rom_first": {
+        "id": "rom_first",
+        "entity_type": "room",
+        "name": "First Room",
+        "floor_id": "flr_ground",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[0.0, 0.0], [4.0, 0.0], [4.0, 3.0], [0.0, 3.0], [0.0, 0.0]],
+          "holes": []
+        }
+      },
+      "rom_second": {
+        "id": "rom_second",
+        "entity_type": "room",
+        "name": "Second Room",
+        "floor_id": "flr_ground",
+        "geometry": {
+          "type": "Polygon2D",
+          "exterior": [[3.0, 1.0], [6.0, 1.0], [6.0, 4.0], [3.0, 4.0], [3.0, 1.0]],
+          "holes": []
+        }
+      }
+    },
+    "walls": {},
+    "doors": {},
+    "windows": {},
+    "stairs": {}
+  }
+}
+

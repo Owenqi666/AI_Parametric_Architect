@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+          version: "0.11.11"
+
+      - name: Install locked dependencies
+        run: uv sync --dev --locked --python ${{ matrix.python-version }}
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Format check
+        run: uv run ruff format --check .
+
+      - name: Type check
+        run: uv run mypy
+
+      - name: Test with branch coverage
+        run: >-
+          uv run pytest --cov=ai_parametric_architect --cov-report=term-missing
+          --cov-report=json:coverage.json
+
+      - name: Enforce branch-only coverage
+        run: uv run python scripts/verify_branch_coverage.py
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      - name: Verify packaged schema
+        run: uv run python scripts/verify_wheel.py
+
+      - name: Verify installed schema
+        run: >-
+          uv run --no-project --with ./dist/*.whl
+          python scripts/verify_installed_schema.py

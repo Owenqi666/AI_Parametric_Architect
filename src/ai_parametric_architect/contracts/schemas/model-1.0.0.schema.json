@@ -1,0 +1,589 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.ai-parametric-architect.dev/model/1.0.0.json",
+  "title": "AI Parametric Architect Model 1.0.0",
+  "description": "Authoritative, local-Cartesian parametric building model.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "model_id",
+    "revision",
+    "units",
+    "coordinate_system",
+    "geometry_settings",
+    "root_building_id",
+    "entities"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "model_id": {
+      "$ref": "#/$defs/modelId"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "angle"],
+      "properties": {
+        "length": {
+          "const": "m"
+        },
+        "angle": {
+          "const": "degree"
+        }
+      }
+    },
+    "coordinate_system": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "handedness", "up_axis", "origin"],
+      "properties": {
+        "type": {
+          "const": "local_cartesian"
+        },
+        "handedness": {
+          "const": "right"
+        },
+        "up_axis": {
+          "const": "Z"
+        },
+        "origin": {
+          "$ref": "#/$defs/point3"
+        }
+      }
+    },
+    "geometry_settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["linear_tolerance"],
+      "properties": {
+        "linear_tolerance": {
+          "type": "number",
+          "minimum": 1e-12,
+          "maximum": 0.01
+        }
+      }
+    },
+    "root_building_id": {
+      "$ref": "#/$defs/buildingId"
+    },
+    "entities": {
+      "$ref": "#/$defs/entityRegistry"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions"
+    }
+  },
+  "$defs": {
+    "modelId": {
+      "type": "string",
+      "pattern": "^mdl_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "buildingId": {
+      "type": "string",
+      "pattern": "^bld_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "floorId": {
+      "type": "string",
+      "pattern": "^flr_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "roomId": {
+      "type": "string",
+      "pattern": "^rom_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "wallId": {
+      "type": "string",
+      "pattern": "^wal_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "doorId": {
+      "type": "string",
+      "pattern": "^dor_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "windowId": {
+      "type": "string",
+      "pattern": "^win_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "stairId": {
+      "type": "string",
+      "pattern": "^str_[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "point2": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "number" },
+        { "type": "number" }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "point3": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "number" },
+        { "type": "number" },
+        { "type": "number" }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "ring2": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/point2"
+      }
+    },
+    "polygon2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "exterior", "holes"],
+      "properties": {
+        "type": {
+          "const": "Polygon2D"
+        },
+        "exterior": {
+          "$ref": "#/$defs/ring2"
+        },
+        "holes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ring2"
+          }
+        }
+      }
+    },
+    "segment2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "start", "end"],
+      "properties": {
+        "type": {
+          "const": "Segment2D"
+        },
+        "start": {
+          "$ref": "#/$defs/point2"
+        },
+        "end": {
+          "$ref": "#/$defs/point2"
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$"
+      }
+    },
+    "building": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "entity_type", "name"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/buildingId"
+        },
+        "entity_type": {
+          "const": "building"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "external_ids": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "floor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "entity_type", "name", "building_id", "elevation", "height"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/floorId"
+        },
+        "entity_type": {
+          "const": "floor"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "building_id": {
+          "$ref": "#/$defs/buildingId"
+        },
+        "elevation": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "room": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "entity_type", "name", "floor_id", "geometry"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/roomId"
+        },
+        "entity_type": {
+          "const": "room"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "floor_id": {
+          "$ref": "#/$defs/floorId"
+        },
+        "usage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "geometry": {
+          "$ref": "#/$defs/polygon2"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "wall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "entity_type",
+        "name",
+        "floor_id",
+        "axis",
+        "thickness",
+        "height",
+        "base_offset",
+        "alignment"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/wallId"
+        },
+        "entity_type": {
+          "const": "wall"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "floor_id": {
+          "$ref": "#/$defs/floorId"
+        },
+        "axis": {
+          "$ref": "#/$defs/segment2"
+        },
+        "thickness": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "base_offset": {
+          "type": "number"
+        },
+        "alignment": {
+          "enum": ["center", "left", "right"]
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "door": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "entity_type",
+        "name",
+        "host_wall_id",
+        "center_offset",
+        "width",
+        "height",
+        "bottom_offset"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/doorId"
+        },
+        "entity_type": {
+          "const": "door"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host_wall_id": {
+          "$ref": "#/$defs/wallId"
+        },
+        "center_offset": {
+          "type": "number",
+          "minimum": 0
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "bottom_offset": {
+          "type": "number",
+          "minimum": 0
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "entity_type",
+        "name",
+        "host_wall_id",
+        "center_offset",
+        "width",
+        "height",
+        "bottom_offset"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/windowId"
+        },
+        "entity_type": {
+          "const": "window"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host_wall_id": {
+          "$ref": "#/$defs/wallId"
+        },
+        "center_offset": {
+          "type": "number",
+          "minimum": 0
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "bottom_offset": {
+          "type": "number",
+          "minimum": 0
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "stair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "entity_type",
+        "name",
+        "from_floor_id",
+        "to_floor_id",
+        "run",
+        "width",
+        "step_count"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/stairId"
+        },
+        "entity_type": {
+          "const": "stair"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "from_floor_id": {
+          "$ref": "#/$defs/floorId"
+        },
+        "to_floor_id": {
+          "$ref": "#/$defs/floorId"
+        },
+        "run": {
+          "$ref": "#/$defs/segment2"
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "step_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      }
+    },
+    "buildingRegistry": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/buildingId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/building"
+      }
+    },
+    "floorRegistry": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/floorId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/floor"
+      }
+    },
+    "roomRegistry": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/roomId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/room"
+      }
+    },
+    "wallRegistry": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/wallId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/wall"
+      }
+    },
+    "doorRegistry": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/doorId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/door"
+      }
+    },
+    "windowRegistry": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/windowId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/window"
+      }
+    },
+    "stairRegistry": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/stairId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/stair"
+      }
+    },
+    "entityRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "buildings",
+        "floors",
+        "rooms",
+        "walls",
+        "doors",
+        "windows",
+        "stairs"
+      ],
+      "properties": {
+        "buildings": {
+          "$ref": "#/$defs/buildingRegistry"
+        },
+        "floors": {
+          "$ref": "#/$defs/floorRegistry"
+        },
+        "rooms": {
+          "$ref": "#/$defs/roomRegistry"
+        },
+        "walls": {
+          "$ref": "#/$defs/wallRegistry"
+        },
+        "doors": {
+          "$ref": "#/$defs/doorRegistry"
+        },
+        "windows": {
+          "$ref": "#/$defs/windowRegistry"
+        },
+        "stairs": {
+          "$ref": "#/$defs/stairRegistry"
+        }
+      }
+    }
+  }
+}

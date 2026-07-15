@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ai-parametric-architect"
+version = "0.1.0"
+description = "A JSON-first parametric architecture validation and rendering core."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "Proprietary" }
+authors = [{ name = "AI Parametric Architect contributors" }]
+dependencies = [
+  "fastapi>=0.116,<1",
+  "jsonschema>=4.25,<5",
+  "ortools==9.15.6755",
+  "shapely>=2.1,<3",
+  "uvicorn>=0.35,<1",
+]
+
+[project.scripts]
+ai-architect = "ai_parametric_architect.cli:main"
+
+[dependency-groups]
+dev = [
+  "httpx>=0.28,<1",
+  "mypy>=1.17,<2",
+  "pytest>=8.4,<10",
+  "pytest-cov>=6.2,<8",
+  "ruff>=0.12,<1",
+  "types-jsonschema>=4.25,<5",
+  "types-shapely>=2.1,<3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ai_parametric_architect"]
+
+[tool.hatch.build]
+artifacts = [
+  "src/ai_parametric_architect/contracts/schemas/*.json",
+  "src/ai_parametric_architect/intent/schemas/*.json",
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers -ra"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["ai_parametric_architect"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 85
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests", "scripts"]
