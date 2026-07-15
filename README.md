@@ -1,14 +1,74 @@
-# AI Parametric Architect
+# AI Parametric Architect Studio
 
-一个 JSON-first 的参数化建筑确定性内核。持久化 JSON revision 是唯一权威 World Model；
-Schema 校验结果、Shapely 对象、SVG、Render IR 和 Three.js scene 都是可丢弃的只读
-派生物，不会反向修改模型。
+> A safe, constraint-aware world-model planning environment for architectural AI.
+
+AI Parametric Architect Studio 将自然语言需求转换为类型化 `DesignIntent`，使用确定性
+Constraint Solver 产生可评估的 detached Proposal，并以只读 Three.js 场景呈现已验证的
+World Model。持久化 JSON Revision 始终是唯一权威模型；LLM、Solver、Benchmark、
+Render IR 和前端场景都没有提交权。
+
+```mermaid
+flowchart LR
+  A["Natural language<br/>untrusted"] --> B["Typed DesignIntent<br/>advisory"]
+  B --> C["CP-SAT planner<br/>deterministic"]
+  C --> D["Detached Proposal<br/>not committed"]
+  D -. "separate realization contract" .-> E["PatchProposal<br/>untrusted candidate"]
+  E --> F["Authorization"]
+  F --> G["Validation"]
+  G --> H["CAS Revision<br/>authoritative JSON"]
+  H --> I["Render IR<br/>read-only"]
+  I --> J["Three.js<br/>derived scene"]
+  H --> K["Trusted Audit<br/>authenticated identity"]
+  D --> L["Evaluation / Benchmark<br/>evidence only"]
+```
+
+![Design Studio](docs/images/design-studio.png)
+
+## 30 秒理解产品
+
+- **Design Studio**：回放三个离线场景，展示可观测的 DesignIntent、Solver 策略、约束数、runtime 的明确 N/A 状态和稳定失败码，不展示隐藏推理。
+- **Detached Planning Sandbox**：可交互预览 `FloorPlanProposal v2`，始终显示 “Detached Proposal / Not committed / Advisory”。
+- **Benchmark Lab**：对比 `rule-spatial-v2` 与 `cp-sat-v2`，区分 end-to-end 和 oracle-intent track，保留失败分母与 N/A 覆盖率。
+- **World Model Explorer**：通过现有 `World Model → Render IR → Three.js` 单向链路展示已验证房间、墙体、门窗、楼层和 revision 身份。
+- **Architecture & Safety**：直观说明为什么 LLM 不能直接改几何、Evaluation 不等于 Authorization，以及 CAS 如何拒绝过期写入。
+
+## 一键离线演示
+
+需要 Python 3.12–3.13、`uv` 和 Node.js `>=22.13.0`。首次运行会校验并安装锁定依赖：
+
+```bash
+./scripts/run_showcase.sh
+# 或
+make showcase
+```
+
+打开 `http://127.0.0.1:3000`。FastAPI 运行在 `http://127.0.0.1:8000`；`Ctrl+C`
+会清理两个子进程。锁定依赖已安装或缓存后，默认演示不需要 API key、网络、
+数据库或手动生成 fixture；首次冷安装仍可能需要软件包注册表。
+详见 [Showcase 指南](docs/SHOWCASE.md)。作品集文档还包括
+[案例研究](docs/CASE_STUDY.md)、[架构概览](docs/ARCHITECTURE_OVERVIEW.md)、
+[Benchmark 方法](docs/BENCHMARK_METHODOLOGY.md)和[演示录制脚本](docs/DEMO_SCRIPT.md)。
+
+| Design Studio | Benchmark Lab |
+| --- | --- |
+| ![Design Studio detached proposal](docs/images/design-studio.png) | ![Benchmark Lab comparison](docs/images/benchmark-lab.png) |
+
+| World Model Explorer | Architecture & Safety |
+| --- | --- |
+| ![World Model Explorer](docs/images/world-model-explorer.png) | ![Architecture and Safety](docs/images/architecture-safety.png) |
+
+## 技术亮点与诚实边界
+
+- JSON Schema Draft 2020-12、语义/引用规则和 Shapely 几何验证共同构成 World Model 准入。
+- JSON Patch、完整验证、revision CAS、Undo/Redo 与 trusted audit 组成唯一权威写路径。
+- OR-Tools CP-SAT 只返回 detached `FloorPlanProposal v2`；Proposal preview 使用独立前端合同，从不进入 `WorldModelRenderIRProjector`。
+- OpenAI Responses 适配器是显式 opt-in 且仅能返回 `DesignIntent`；本 release 的 Studio 不暴露 live 控件。
+- 版本化 BenchmarkReport 导入经过 exact-field、数值有限性、资源预算与深冻结验证；评分只是证据，不是提交授权。
+- 这是 production-oriented research prototype，**不声称**建筑规范合规、自动建筑正确性、AI 几何权威或可直接公网运营。当前 repository/audit 为进程内实现，流线指标中 circulation 仅是中心距离 proxy。
 
 当前定位：**Production-oriented AI Agent Framework Prototype with constraint-aware
 detached planning, evaluation, and read-only 3D visualization**。它已完成安全硬化、
-Phase 7 Task 7.1–7.2，以及 Final Enhancement Priority 1–3，但仍不是可直接暴露到公网的
-production-ready 服务。OpenAI 网络解析是显式 opt-in，默认组合和 planning benchmark
-的内置默认 systems 都保持确定且不联网；报告中的真实 monotonic timing 会随运行变化。
+Phase 7 Task 7.1–7.2、Final Enhancement Priority 1–3 与离线作品集展示层，但仍不是可直接暴露到公网的 production-ready 服务。
 
 当前 MVP 已打通：
 
@@ -109,6 +169,7 @@ uv run uvicorn ai_parametric_architect.backend.api:app --reload
 接口：
 
 - `GET /health`
+- `GET /v1/capabilities`（仅返回安全的功能布尔值）
 - `POST /v1/models/validate`
 - `POST /v1/models/render/svg`
 - `POST /v1/models/render/ir`
@@ -175,7 +236,7 @@ uv run ai-architect render-svg examples/valid_simple_house.json simple_house.svg
 Viewer 只接收 Render IR，不读取或修改原始 World Model，不生成 Patch，不访问 repository，
 也没有 authorization 或 revision commit 能力。当前 v1 不显示 stair；门窗以 panel 表示，
 不会通过 CSG 修改墙体。默认演示加载同源静态 fixture
-`frontend/public/examples/simple-house.render-ir.json`，Python 集成测试会核对它与后端
+`frontend/public/examples/showcase-house.render-ir.json`，Python 集成测试会核对它与后端
 projector 的输出；默认页面不会自行向 POST API 提交 World Model。
 
 启动 viewer：
@@ -802,7 +863,7 @@ src/ai_parametric_architect/
   validation/        structural, L1 and L2 rules
 benchmarks/           separate versioned planning datasets and reference annotations
 examples/             valid and invalid acceptance fixtures
-frontend/             strict Render IR parser, Three.js scene and read-only viewer UI
+frontend/             Studio shell, strict Proposal/Benchmark/Render IR admission, Three.js read-only UI
   public/examples/    backend-synchronized Render IR demonstration fixture
 tests/                contract, unit, integration, API and architecture tests
 tests/security_tests/ adversarial trust-boundary and concurrency regressions
