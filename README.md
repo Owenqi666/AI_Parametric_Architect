@@ -2,51 +2,51 @@
 
 > A safe, constraint-aware world-model planning environment for architectural AI.
 
-AI Parametric Architect Studio converts natural-language requirements into typed architectural intent, generates deterministic floor-plan proposals with OR-Tools CP-SAT, evaluates those proposals, and visualizes validated world-model revisions through a read-only Three.js interface.
+AI Parametric Architect Studio converts natural-language requirements into typed architectural intent, produces deterministic floor-plan proposals with OR-Tools CP-SAT, evaluates those proposals, and visualizes validated world-model revisions through a read-only Three.js interface.
 
-The project is built around one rule:
+The system is built around one rule:
 
 > **Persisted JSON revisions are the only authoritative world model.**
 
-LLM responses, solver layouts, benchmark reports, Render IR, SVG output, and Three.js scenes are all derived or advisory artifacts. None of them can directly mutate or commit authoritative geometry.
-
-![Design Studio](docs/images/design-studio.png)
+LLM responses, solver layouts, benchmark reports, Render IR, SVG output, and Three.js scenes are derived or advisory artifacts. None of them can directly mutate or commit authoritative geometry.
 
 ---
 
-## Why This Project Exists
-
-Many AI design systems allow a language model to generate geometry and write it directly into application state. That approach is difficult to validate, reproduce, audit, or secure.
-
-AI Parametric Architect separates language understanding, spatial planning, validation, authorization, persistence, evaluation, and visualization into explicit boundaries:
+## Overview
 
 ```mermaid
-flowchart LR
-  A["Natural language<br/>untrusted input"] --> B["Typed DesignIntent<br/>advisory"]
-  B --> C["CP-SAT planner<br/>deterministic"]
-  C --> D["Detached FloorPlanProposal<br/>not committed"]
-  D --> E["Evaluation / Benchmark<br/>evidence only"]
+flowchart TD
+    A["Natural-language requirement<br/>untrusted input"]
+    B["Typed DesignIntent<br/>advisory"]
+    C["CP-SAT planner<br/>deterministic"]
+    D["Detached FloorPlanProposal<br/>not committed"]
+    E["Evaluation and benchmark<br/>evidence only"]
+    F["PatchProposal<br/>untrusted candidate"]
+    G["Authorization policy"]
+    H["Schema, semantic, and geometry validation"]
+    I["CAS revision commit<br/>authoritative JSON"]
+    J["Trusted audit event"]
+    K["Render IR<br/>read-only"]
+    L["Three.js scene<br/>derived view"]
 
-  D -. "future realization contract" .-> F["PatchProposal<br/>untrusted candidate"]
-  F --> G["Authorization policy"]
-  G --> H["Schema + semantic + geometry validation"]
-  H --> I["CAS revision commit<br/>authoritative JSON"]
-  I --> J["Trusted audit event"]
-  I --> K["Render IR<br/>read-only"]
-  K --> L["Three.js scene<br/>derived view"]
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D -. "future realization contract" .-> F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+    I --> K
+    K --> L
 ```
 
-This architecture makes the system useful not only as an architectural prototype, but also as a reference implementation for safe AI planning over structured world models.
+This separation makes the system easier to validate, reproduce, audit, benchmark, and secure than a direct LLM-to-geometry pipeline.
 
 ---
 
-## Project Status
-
-**Current maturity**
-
-> Production-oriented AI Agent Framework Prototype with constraint-aware detached planning, evaluation, and read-only 3D visualization.
-
-Completed capabilities include:
+## Key Capabilities
 
 - JSON-first authoritative world model
 - JSON Schema Draft 2020-12 validation
@@ -65,9 +65,17 @@ Completed capabilities include:
 - rule-based and CP-SAT benchmark systems
 - opt-in OpenAI Responses adapter for `DesignIntent` extraction only
 - tenant-scoped HMAC trace correlation
-- offline showcase application and portfolio documentation
+- offline showcase application
 
-This repository is **not** a production-ready public service. It does not claim:
+---
+
+## Project Status
+
+**Current maturity**
+
+> Production-oriented AI Agent Framework Prototype with constraint-aware detached planning, evaluation, and read-only 3D visualization.
+
+The project is not a production-ready public service. It does not claim:
 
 - building-code compliance
 - automatic architectural correctness
@@ -81,9 +89,7 @@ This repository is **not** a production-ready public service. It does not claim:
 
 ---
 
-## Product Experience
-
-The showcase application contains four main workspaces.
+## Product Workspaces
 
 ### Design Studio
 
@@ -97,7 +103,7 @@ Requirement
   -> Planning metrics
 ```
 
-The proposal preview is clearly labelled:
+Every proposal preview is explicitly labelled:
 
 - **Detached Proposal**
 - **Not committed to World Model**
@@ -107,13 +113,13 @@ The current Studio release does not expose a live OpenAI planning control or a l
 
 ### Detached Planning Sandbox
 
-The sandbox renders proposal-local room rectangles, areas, orientations, and spatial constraints through a dedicated frontend contract.
+The sandbox renders proposal-local room rectangles, room areas, orientations, and spatial constraints through a dedicated frontend contract.
 
-It does not call `WorldModelRenderIRProjector`, does not create patches, and does not present proposal geometry as committed model state.
+It does not call `WorldModelRenderIRProjector`, create patches, or present proposal geometry as committed world-model state.
 
 ### Benchmark Lab
 
-The Benchmark Lab compares planning systems across two evaluation tracks:
+The Benchmark Lab compares planning systems across two tracks:
 
 - `end_to_end`: requirement text → parser → planner
 - `oracle_intent`: reference intent → planner
@@ -122,7 +128,7 @@ Built-in systems:
 
 - `rule-spatial-v2`
 - `cp-sat-v2`
-- `openai-cp-sat-v2` when explicitly enabled from the benchmark CLI
+- `openai-cp-sat-v2` when explicitly enabled through the benchmark CLI
 
 Reported metrics include:
 
@@ -134,8 +140,6 @@ Reported metrics include:
 - circulation proxy
 - repeated-run stability
 - parse, planning, and total runtime
-
-Every metric includes coverage and sample-count information. Failures remain in the relevant denominators rather than being silently excluded.
 
 ### World Model Explorer
 
@@ -161,7 +165,7 @@ Supported interactions include:
 
 The viewer cannot generate patches, access the repository, authorize operations, or commit revisions.
 
-### Architecture & Safety
+### Architecture and Safety
 
 This workspace explains:
 
@@ -182,7 +186,7 @@ This workspace explains:
 - [`uv`](https://docs.astral.sh/uv/)
 - Node.js 22.13.0 or newer
 
-### One-command showcase
+### Start the showcase
 
 ```bash
 ./scripts/run_showcase.sh
@@ -228,30 +232,22 @@ Available endpoints:
 ### Validate a model
 
 ```bash
-curl -sS -X POST http://127.0.0.1:8000/v1/models/validate \
-  -H 'Content-Type: application/json' \
-  --data-binary @examples/valid_simple_house.json
+curl -sS -X POST http://127.0.0.1:8000/v1/models/validate   -H 'Content-Type: application/json'   --data-binary @examples/valid_simple_house.json
 ```
 
 ### Render SVG
 
 ```bash
-curl -sS -X POST http://127.0.0.1:8000/v1/models/render/svg \
-  -H 'Content-Type: application/json' \
-  --data-binary @examples/valid_simple_house.json \
-  --output simple_house.svg
+curl -sS -X POST http://127.0.0.1:8000/v1/models/render/svg   -H 'Content-Type: application/json'   --data-binary @examples/valid_simple_house.json   --output simple_house.svg
 ```
 
 ### Generate Render IR
 
 ```bash
-curl -sS -X POST http://127.0.0.1:8000/v1/models/render/ir \
-  -H 'Content-Type: application/json' \
-  --data-binary @examples/valid_simple_house.json \
-  --output simple-house.render-ir.json
+curl -sS -X POST http://127.0.0.1:8000/v1/models/render/ir   -H 'Content-Type: application/json'   --data-binary @examples/valid_simple_house.json   --output simple-house.render-ir.json
 ```
 
-The same deterministic read path is also available through the CLI:
+The same deterministic read path is available through the CLI:
 
 ```bash
 uv run ai-architect validate examples/valid_simple_house.json
@@ -262,9 +258,9 @@ uv run ai-architect render-svg examples/valid_simple_house.json simple_house.svg
 
 ## Core Architecture
 
-### Authoritative world model
+### Authoritative World Model
 
-The authoritative state is a versioned JSON document stored inside an immutable revision envelope.
+The authoritative state is a versioned JSON document inside an immutable revision envelope.
 
 ```text
 Transport or library input
@@ -285,7 +281,7 @@ The strict JSON boundary rejects:
 - aliased mutable containers
 - excessively deep trees
 
-### Editing and revision control
+### Editing and Revision Control
 
 ```text
 Immutable revision snapshot
@@ -308,7 +304,7 @@ Undo and redo are compensating commits. Historical revisions are never overwritt
 
 The built-in repository is thread-safe but process-local and in-memory. It is intended for development and prototype use.
 
-### Agent write boundary
+### Agent Write Boundary
 
 Agent-generated proposals cannot write directly to the repository.
 
@@ -360,7 +356,7 @@ Example:
 
 `DesignIntent` is not a second world model and contains no authoritative geometry.
 
-### CP-SAT planner
+### CP-SAT Planner
 
 The production planning composition uses a pinned OR-Tools CP-SAT solver:
 
@@ -395,9 +391,9 @@ The solver runs with:
 
 `FEASIBLE`, `UNKNOWN`, `MODEL_INVALID`, and `INFEASIBLE` fail closed with a structured error.
 
-### Proposal is not realization
+### Proposal Is Not Realization
 
-A `FloorPlanProposal v2` contains solved rectangles, but remains advisory.
+A `FloorPlanProposal v2` contains solved rectangles but remains advisory.
 
 It cannot:
 
@@ -412,7 +408,7 @@ Promoting a selected proposal into authoritative geometry requires a future real
 
 ## Optional OpenAI Adapter
 
-The project includes an opt-in OpenAI Responses adapter located under `infrastructure/llm`.
+The project includes an opt-in OpenAI Responses adapter under `infrastructure/llm`.
 
 Its only supported live responsibility is:
 
@@ -468,22 +464,13 @@ The default application, FastAPI routes, showcase, and benchmark systems remain 
 Run the default offline benchmark:
 
 ```bash
-uv run ai-architect-benchmark \
-  benchmarks/datasets/planning-core-1.0.0.json \
-  benchmarks/annotations/planning-core-reference-1.0.0.json \
-  planning-benchmark-report.json \
-  --trials 2
+uv run ai-architect-benchmark   benchmarks/datasets/planning-core-1.0.0.json   benchmarks/annotations/planning-core-reference-1.0.0.json   planning-benchmark-report.json   --trials 2
 ```
 
 To explicitly include the OpenAI parser:
 
 ```bash
-uv run ai-architect-benchmark \
-  benchmarks/datasets/planning-core-1.0.0.json \
-  benchmarks/annotations/planning-core-reference-1.0.0.json \
-  planning-benchmark-report.json \
-  --trials 2 \
-  --openai-model "$OPENAI_MODEL"
+uv run ai-architect-benchmark   benchmarks/datasets/planning-core-1.0.0.json   benchmarks/annotations/planning-core-reference-1.0.0.json   planning-benchmark-report.json   --trials 2   --openai-model "$OPENAI_MODEL"
 ```
 
 Benchmark datasets and reference annotations are separate, versioned artifacts. Reference intent is never supplied to the end-to-end parser.
