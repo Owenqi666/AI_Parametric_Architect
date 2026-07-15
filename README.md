@@ -192,12 +192,6 @@ This workspace explains:
 ./scripts/run_showcase.sh
 ```
 
-or:
-
-```bash
-make showcase
-```
-
 The launcher starts:
 
 - frontend: `http://127.0.0.1:3000`
@@ -207,9 +201,8 @@ Press `Ctrl+C` to stop both processes.
 
 The default showcase requires no API key, database, or manually generated fixture. A first-time dependency installation may still require internet access to package registries.
 
-See [`docs/SHOWCASE.md`](docs/SHOWCASE.md) for troubleshooting and recording instructions.
-
 ---
+
 
 ## Backend API
 
@@ -580,7 +573,6 @@ src/ai_parametric_architect/
 frontend/             showcase UI and strict browser admission
 benchmarks/           planning datasets and reference annotations
 examples/             valid and invalid world-model fixtures
-docs/                 showcase, architecture, benchmark, and case-study documentation
 tests/                unit, integration, architecture, and security regressions
 ```
 
@@ -588,13 +580,13 @@ tests/                unit, integration, architecture, and security regressions
 
 ## Documentation
 
-- [Showcase Guide](docs/SHOWCASE.md)
-- [Case Study](docs/CASE_STUDY.md)
-- [Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md)
-- [Benchmark Methodology](docs/BENCHMARK_METHODOLOGY.md)
-- [Demo Recording Script](docs/DEMO_SCRIPT.md)
+The repository currently includes the following documentation files:
+
 - [Detailed Architecture](architecture.md)
 - [Security Model](Security.md)
+- [Historical Industrial Architecture Review](Industrial_Architecture_Review.md)
+
+The historical review is retained for traceability and should not be interpreted as the current release status.
 
 ---
 
