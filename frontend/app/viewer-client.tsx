@@ -3,15 +3,32 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { EntityList } from "./entity-list";
 import { loadRenderIr, DEFAULT_RENDER_IR_SOURCE } from "@/lib/render-ir/source";
-import type { RenderIr } from "@/lib/render-ir/types";
+import type { RenderIr, RenderObject } from "@/lib/render-ir/types";
 import { SceneController } from "@/lib/three/scene-controller";
 
 interface WorldModelViewerProps {
   readonly source?: string;
+  readonly embedded?: boolean;
+  readonly onSnapshot?: (snapshot: WorldModelViewSnapshot) => void;
+  readonly selectionRequest?: string | null;
 }
 
-export function WorldModelViewer({ source = DEFAULT_RENDER_IR_SOURCE }: WorldModelViewerProps) {
+export interface WorldModelViewSnapshot {
+  readonly renderIr: RenderIr | null;
+  readonly selected: RenderObject | null;
+  readonly floorId: string | null;
+  readonly status: "loading" | "ready" | "error";
+  readonly errorMessage: string | null;
+}
+
+export function WorldModelViewer({
+  source = DEFAULT_RENDER_IR_SOURCE,
+  embedded = false,
+  onSnapshot,
+  selectionRequest,
+}: WorldModelViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stageRef = useRef<HTMLElement>(null);
   const controllerRef = useRef<SceneController | null>(null);
   const [renderIr, setRenderIr] = useState<RenderIr | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -51,7 +68,10 @@ export function WorldModelViewer({ source = DEFAULT_RENDER_IR_SOURCE }: WorldMod
     let active = true;
     let controller: SceneController | null = null;
     try {
-      controller = new SceneController(canvas, renderIr, setSelectedId);
+      controller = new SceneController(canvas, renderIr, setSelectedId, () => {
+        setStatus("error");
+        setErrorMessage("The 3D context was lost. Retry to rebuild the read-only scene.");
+      });
       controllerRef.current = controller;
     } catch {
       queueMicrotask(() => {
@@ -72,6 +92,10 @@ export function WorldModelViewer({ source = DEFAULT_RENDER_IR_SOURCE }: WorldMod
     [renderIr, selectedId],
   );
 
+  useEffect(() => {
+    onSnapshot?.({ renderIr, selected, floorId, status, errorMessage });
+  }, [errorMessage, floorId, onSnapshot, renderIr, selected, status]);
+
   const chooseFloor = (nextFloorId: string | null) => {
     setFloorId(nextFloorId);
     controllerRef.current?.setFloor(nextFloorId);
@@ -80,6 +104,95 @@ export function WorldModelViewer({ source = DEFAULT_RENDER_IR_SOURCE }: WorldMod
   const chooseEntity = (entityId: string) => {
     controllerRef.current?.selectEntity(entityId);
   };
+
+  useEffect(() => {
+    if (selectionRequest !== undefined) controllerRef.current?.selectEntity(selectionRequest);
+  }, [renderIr, selectionRequest]);
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen();
+      return;
+    }
+    void stageRef.current?.requestFullscreen();
+  };
+
+  const stage = (
+    <section
+      ref={stageRef}
+      className={`viewer-stage${embedded ? " viewer-stage--embedded" : ""}`}
+      aria-label="Authoritative World Model visualization workspace"
+    >
+      <canvas
+        ref={canvasRef}
+        className="world-canvas"
+        aria-label="Interactive 3D view. Drag to orbit, scroll to zoom, and press Escape to clear selection."
+        tabIndex={0}
+      />
+
+      <div className="stage-toolbar" role="toolbar" aria-label="World Model camera controls">
+        <button type="button" onClick={() => controllerRef.current?.viewIsometric()}>
+          Isometric
+        </button>
+        <button type="button" onClick={() => controllerRef.current?.viewTop()}>
+          Top
+        </button>
+        <button type="button" onClick={() => controllerRef.current?.viewIsometric()}>
+          Fit
+        </button>
+        <button type="button" onClick={toggleFullscreen}>
+          Full screen
+        </button>
+      </div>
+
+      {embedded && renderIr ? (
+        <div className="stage-floor-control">
+          <label htmlFor="embedded-floor">Floor visibility</label>
+          <select
+            id="embedded-floor"
+            value={floorId ?? "all"}
+            onChange={(event) => chooseFloor(event.target.value === "all" ? null : event.target.value)}
+          >
+            <option value="all">All floors</option>
+            {renderIr.floors.map((floor) => (
+              <option key={floor.entity_id} value={floor.entity_id}>
+                {floor.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : null}
+
+      <div className="axis-key" aria-label="Model coordinate system">
+        <span><i className="axis axis--x" />X</span>
+        <span><i className="axis axis--y" />Y</span>
+        <span><i className="axis axis--z" />Z up</span>
+      </div>
+
+      {embedded && renderIr ? (
+        <div className="authority-overlay">
+          <strong>Authoritative World Model</strong>
+          <span>{renderIr.source_model.model_id} · Revision {renderIr.source_model.revision}</span>
+          <small>Derived read-only Render IR {renderIr.render_ir_version}</small>
+        </div>
+      ) : null}
+
+      {status !== "ready" ? (
+        <div className="stage-state" role={status === "error" ? "alert" : "status"}>
+          <span className="stage-state__number">{status === "error" ? "!" : "…"}</span>
+          <h2>{status === "error" ? "Unable to open the model" : "Building the scene"}</h2>
+          <p>{errorMessage ?? "Validating the versioned visualization contract."}</p>
+          {status === "error" ? (
+            <button type="button" onClick={() => setLoadVersion((value) => value + 1)}>
+              Retry
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+    </section>
+  );
+
+  if (embedded) return stage;
 
   return (
     <main className="viewer-shell">
@@ -104,42 +217,7 @@ export function WorldModelViewer({ source = DEFAULT_RENDER_IR_SOURCE }: WorldMod
         </div>
       </header>
 
-      <section className="viewer-stage" aria-label="World model visualization workspace">
-        <canvas
-          ref={canvasRef}
-          className="world-canvas"
-          aria-label="Interactive 3D view. Drag to orbit, scroll to zoom, and press Escape to clear selection."
-          tabIndex={0}
-        />
-
-        <div className="stage-toolbar" aria-label="Camera controls">
-          <button type="button" onClick={() => controllerRef.current?.viewIsometric()}>
-            Isometric
-          </button>
-          <button type="button" onClick={() => controllerRef.current?.viewTop()}>
-            Plan view
-          </button>
-        </div>
-
-        <div className="axis-key" aria-label="Model coordinate system">
-          <span><i className="axis axis--x" />X</span>
-          <span><i className="axis axis--y" />Y</span>
-          <span><i className="axis axis--z" />Z up</span>
-        </div>
-
-        {status !== "ready" ? (
-          <div className="stage-state" role={status === "error" ? "alert" : "status"}>
-            <span className="stage-state__number">{status === "error" ? "!" : "…"}</span>
-            <h2>{status === "error" ? "Unable to open the model" : "Building the scene"}</h2>
-            <p>{errorMessage ?? "Validating the versioned visualization contract."}</p>
-            {status === "error" ? (
-              <button type="button" onClick={() => setLoadVersion((value) => value + 1)}>
-                Retry
-              </button>
-            ) : null}
-          </div>
-        ) : null}
-      </section>
+      {stage}
 
       <aside className="model-panel" aria-label="World model browser">
         <section className="panel-section panel-section--floors">

@@ -1,5 +1,10 @@
-import { WorldModelViewer } from "./viewer-client";
+import { ProductShell } from "./components/product-shell";
+import { DesignStudioClient } from "./design-studio-client";
 
 export default function Home() {
-  return <WorldModelViewer />;
+  return (
+    <ProductShell active="studio">
+      <DesignStudioClient />
+    </ProductShell>
+  );
 }
