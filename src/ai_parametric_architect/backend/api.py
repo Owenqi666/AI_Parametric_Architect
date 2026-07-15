@@ -19,6 +19,7 @@ from ai_parametric_architect.domain import (
 )
 from ai_parametric_architect.ports import FloorNotFoundError, NoRenderableGeometryError
 
+from .capabilities import PublicCapabilities
 from .request_limits import RequestBodySizeLimitMiddleware, RequestBodySizePolicy
 
 
@@ -40,10 +41,14 @@ def _transport_error(code: str, message: str, path: str) -> dict[str, Any]:
 def create_app(
     service: ArchitectService | None = None,
     *,
+    capabilities: PublicCapabilities | None = None,
     json_guard: StrictJsonTreeGuard | None = None,
     request_body_policy: RequestBodySizePolicy | None = None,
 ) -> FastAPI:
     application = create_service() if service is None else service
+    public_capabilities = PublicCapabilities() if capabilities is None else capabilities
+    if type(public_capabilities) is not PublicCapabilities:
+        raise TypeError("capabilities must be an exact PublicCapabilities value.")
     strict_json = StrictJsonTreeGuard() if json_guard is None else json_guard
     app = FastAPI(title="AI Parametric Architect", version=__version__)
     app.add_middleware(RequestBodySizeLimitMiddleware, policy=request_body_policy)
@@ -67,6 +72,10 @@ def create_app(
     @app.get("/health")
     def health() -> dict[str, str]:
         return {"status": "ok", "service": "ai-parametric-architect", "version": __version__}
+
+    @app.get("/v1/capabilities")
+    def capabilities_endpoint() -> dict[str, bool]:
+        return public_capabilities.to_dict()
 
     @app.post("/v1/models/validate")
     def validate_model(model: Annotated[dict[str, Any], Body()]) -> dict[str, Any]:

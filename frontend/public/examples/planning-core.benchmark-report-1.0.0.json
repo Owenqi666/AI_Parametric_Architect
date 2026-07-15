@@ -1,0 +1,1629 @@
+{
+  "annotations": {
+    "annotation_set_id": "planning-core-reference",
+    "annotation_set_version": "1.0.0",
+    "digest": "3035ca7af6bdadf7029da653b7a6125da950c4fbbaa267c3d60cd8116253f84e"
+  },
+  "configuration": {
+    "budget": {
+      "max_attempts": 64,
+      "max_cases": 16,
+      "max_systems": 2,
+      "max_trials": 2
+    },
+    "metric_context": {
+      "context_id": "planning-benchmark-v1",
+      "default_minimum_room_area": 6.0,
+      "max_runs": 2,
+      "minimum_adjacency_contact": 1.0,
+      "minimum_room_areas": [
+        {
+          "minimum_area": 4.0,
+          "room_type": "bathroom"
+        },
+        {
+          "minimum_area": 10.0,
+          "room_type": "bedroom"
+        },
+        {
+          "minimum_area": 10.0,
+          "room_type": "dining"
+        },
+        {
+          "minimum_area": 8.0,
+          "room_type": "kitchen"
+        },
+        {
+          "minimum_area": 18.0,
+          "room_type": "living"
+        },
+        {
+          "minimum_area": 8.0,
+          "room_type": "office"
+        },
+        {
+          "minimum_area": 6.0,
+          "room_type": "study"
+        }
+      ],
+      "near_distance": 8.0,
+      "precision": {
+        "decimal_places": 9,
+        "linear_tolerance": 1e-09
+      },
+      "separation_gap": 1.0
+    },
+    "trials": 2
+  },
+  "dataset": {
+    "case_count": 8,
+    "dataset_id": "planning-core",
+    "dataset_version": "1.0.0",
+    "digest": "e5c2c55263efe794db4aaf72064946a841b9648dedab896f7c2275556cba4017"
+  },
+  "observations": [
+    {
+      "case_id": "residential_001_south_adjacent",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "a26cc7e77a1907a15600e17dd0ef6d6fa7ada543aca15b934e23bab4df91e676",
+          "runtime_ns": {
+            "parse": 114833,
+            "plan": 27291,
+            "total": 142124
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "3b7aeff974195199abcfd735607ca7f9ee1379ae48e69fa1d2b3a020b8d9b8a6",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 23166,
+            "total": 23166
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_001_south_adjacent",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "a26cc7e77a1907a15600e17dd0ef6d6fa7ada543aca15b934e23bab4df91e676",
+          "runtime_ns": {
+            "parse": 99708,
+            "plan": 18541,
+            "total": 118249
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "3b7aeff974195199abcfd735607ca7f9ee1379ae48e69fa1d2b3a020b8d9b8a6",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 20041,
+            "total": 20041
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_002_north_adjacent_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "dab449c3962534e877dc97df96a93be4ef779a316a51343ca88e3b21dac451e2",
+          "runtime_ns": {
+            "parse": 77375,
+            "plan": 21041,
+            "total": 98416
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "ba6e37b37d0831d6f04fb2d644ed5284c9f33f20358404b9d0fb3e940e0b14ed",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 15500,
+            "total": 15500
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_002_north_adjacent_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "dab449c3962534e877dc97df96a93be4ef779a316a51343ca88e3b21dac451e2",
+          "runtime_ns": {
+            "parse": 54833,
+            "plan": 14583,
+            "total": 69416
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "ba6e37b37d0831d6f04fb2d644ed5284c9f33f20358404b9d0fb3e940e0b14ed",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 14583,
+            "total": 14583
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_003_separated",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "4f56f8ecca4c2a476d1d5be7bb4407e3ed3a409987cfb59078380ba8c0d3dc65",
+          "runtime_ns": {
+            "parse": 89709,
+            "plan": 14625,
+            "total": 104334
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "5cc4c1ea280880412818ff522d50ace7089b841c1dec12d8349fd02e761c5a0c",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 14709,
+            "total": 14709
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_003_separated",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "4f56f8ecca4c2a476d1d5be7bb4407e3ed3a409987cfb59078380ba8c0d3dc65",
+          "runtime_ns": {
+            "parse": 87541,
+            "plan": 14750,
+            "total": 102291
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "5cc4c1ea280880412818ff522d50ace7089b841c1dec12d8349fd02e761c5a0c",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 14666,
+            "total": 14666
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_004_east_direction",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "0ae6c007fc414e556d15e7191be89faec0dacdc09bc296a79b84571a83250609",
+          "runtime_ns": {
+            "parse": 98542,
+            "plan": 17625,
+            "total": 116167
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "d298f2ffbf45ded612a86bd8f6e2f22363576cf19dc20ae72126031df92808de",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 17417,
+            "total": 17417
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_004_east_direction",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "0ae6c007fc414e556d15e7191be89faec0dacdc09bc296a79b84571a83250609",
+          "runtime_ns": {
+            "parse": 102750,
+            "plan": 18750,
+            "total": 121500
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "d298f2ffbf45ded612a86bd8f6e2f22363576cf19dc20ae72126031df92808de",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 18042,
+            "total": 18042
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_005_west_direction_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "c60f3b972e24af66df05a302502b54e3b79fd33c68b60d49aeca470e1bdb7f15",
+          "runtime_ns": {
+            "parse": 64542,
+            "plan": 25667,
+            "total": 90209
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "7d0f229458cbf7ffe9849f334f64c5894cbe7684b7c14ed6086726bf36fcdc60",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 16667,
+            "total": 16667
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_005_west_direction_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "c60f3b972e24af66df05a302502b54e3b79fd33c68b60d49aeca470e1bdb7f15",
+          "runtime_ns": {
+            "parse": 70625,
+            "plan": 16750,
+            "total": 87375
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "7d0f229458cbf7ffe9849f334f64c5894cbe7684b7c14ed6086726bf36fcdc60",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 17375,
+            "total": 17375
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_006_south_separated_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "cd7f2b0e499f275ec714fc0d038ec6284d7b8f584cc87e0ec7f44a49a72bd211",
+          "runtime_ns": {
+            "parse": 52750,
+            "plan": 13959,
+            "total": 66709
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "e065692b13cfc957e679694636ee52a341ea76051e39ce3c93b513bb206f5646",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 14291,
+            "total": 14291
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_006_south_separated_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "cd7f2b0e499f275ec714fc0d038ec6284d7b8f584cc87e0ec7f44a49a72bd211",
+          "runtime_ns": {
+            "parse": 58708,
+            "plan": 17083,
+            "total": 75791
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "e065692b13cfc957e679694636ee52a341ea76051e39ce3c93b513bb206f5646",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 20375,
+            "total": 20375
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_007_near",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "782ea94383e2db65df612b553cf842d2a4782306d41ef94ef9b207133000dd95",
+          "runtime_ns": {
+            "parse": 84083,
+            "plan": 14666,
+            "total": 98749
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "260f12d0de1573b80203ff866f38dbd78ab8329498b93eacdd6d32813181a453",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 14792,
+            "total": 14792
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_007_near",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "782ea94383e2db65df612b553cf842d2a4782306d41ef94ef9b207133000dd95",
+          "runtime_ns": {
+            "parse": 88792,
+            "plan": 13083,
+            "total": 101875
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "260f12d0de1573b80203ff866f38dbd78ab8329498b93eacdd6d32813181a453",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 13541,
+            "total": 13541
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_008_multi_direction_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "053ffc610d66a1ca7782431508fd2bc86c250871452a1866a4c9ff7c42f4e008",
+          "runtime_ns": {
+            "parse": 64458,
+            "plan": 13167,
+            "total": 77625
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "d822e6e3ae2e27c20144d44bff67f737f4fc7c3a6491405021e74d6b3302ab32",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 29917,
+            "total": 29917
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_008_multi_direction_zh",
+      "intent_exact": false,
+      "system_id": "rule-spatial-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "053ffc610d66a1ca7782431508fd2bc86c250871452a1866a4c9ff7c42f4e008",
+          "runtime_ns": {
+            "parse": 70125,
+            "plan": 13375,
+            "total": 83500
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "d822e6e3ae2e27c20144d44bff67f737f4fc7c3a6491405021e74d6b3302ab32",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 14834,
+            "total": 14834
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_001_south_adjacent",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "3ffbb429ffe6f631b198fb114cdec07b53f11e11ca27e4ca91a2885a45d8c52b",
+          "runtime_ns": {
+            "parse": 100291,
+            "plan": 1426584583,
+            "total": 1426684874
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "f030a28854acd0dc5be1199327b35c5709adb386ecac249b7333dfb30c613318",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 926021625,
+            "total": 926021625
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_001_south_adjacent",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "3ffbb429ffe6f631b198fb114cdec07b53f11e11ca27e4ca91a2885a45d8c52b",
+          "runtime_ns": {
+            "parse": 123083,
+            "plan": 1433561125,
+            "total": 1433684208
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "f030a28854acd0dc5be1199327b35c5709adb386ecac249b7333dfb30c613318",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 929049584,
+            "total": 929049584
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_002_north_adjacent_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "27be81a5acbdb1d4c59264b6b10cc42ab24417aa3cdc1d8a8888a297a5eb3905",
+          "runtime_ns": {
+            "parse": 108042,
+            "plan": 74569333,
+            "total": 74677375
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "7015081c02c6bd2dcb520e1e0d316dbcb9beaf5604320f3b3b79f29a3724e8c9",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 58626250,
+            "total": 58626250
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_002_north_adjacent_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "27be81a5acbdb1d4c59264b6b10cc42ab24417aa3cdc1d8a8888a297a5eb3905",
+          "runtime_ns": {
+            "parse": 93166,
+            "plan": 73492000,
+            "total": 73585166
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "7015081c02c6bd2dcb520e1e0d316dbcb9beaf5604320f3b3b79f29a3724e8c9",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 59151417,
+            "total": 59151417
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_003_separated",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "5f1605d0e2e3ebb0efc0a277d09eff3250bd076f0dbcb37eca1920bcd6f7de3f",
+          "runtime_ns": {
+            "parse": 119375,
+            "plan": 56902167,
+            "total": 57021542
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "68c44b2e77767fad846f81dc9c1eb952395654a7b0753c9a1633f226bb91852b",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 28549417,
+            "total": 28549417
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_003_separated",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "5f1605d0e2e3ebb0efc0a277d09eff3250bd076f0dbcb37eca1920bcd6f7de3f",
+          "runtime_ns": {
+            "parse": 125000,
+            "plan": 56979500,
+            "total": 57104500
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "68c44b2e77767fad846f81dc9c1eb952395654a7b0753c9a1633f226bb91852b",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 28079958,
+            "total": 28079958
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_004_east_direction",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "82954f50d96b703905edc5fd3be5017f1dab9189b48c3a202543f52115ed6883",
+          "runtime_ns": {
+            "parse": 125750,
+            "plan": 872444084,
+            "total": 872569834
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "bc1628d49aa87dad46971c4c2fc632a739e040d6f470c70cc448bcb616e71872",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 1592144000,
+            "total": 1592144000
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_004_east_direction",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "82954f50d96b703905edc5fd3be5017f1dab9189b48c3a202543f52115ed6883",
+          "runtime_ns": {
+            "parse": 167542,
+            "plan": 873381542,
+            "total": 873549084
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "bc1628d49aa87dad46971c4c2fc632a739e040d6f470c70cc448bcb616e71872",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 1589751458,
+            "total": 1589751458
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_005_west_direction_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "9dabdbd13aa00e978b97e5b7c4b3c205749a3277e0b73772236cd2c2add780eb",
+          "runtime_ns": {
+            "parse": 95209,
+            "plan": 1016908166,
+            "total": 1017003375
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "7e6a67f5fa35ad5fa3b14f5903a73ed90c4eade95dcd70e2efd393b45de6a17b",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 301461375,
+            "total": 301461375
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_005_west_direction_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "9dabdbd13aa00e978b97e5b7c4b3c205749a3277e0b73772236cd2c2add780eb",
+          "runtime_ns": {
+            "parse": 99375,
+            "plan": 1028030375,
+            "total": 1028129750
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "7e6a67f5fa35ad5fa3b14f5903a73ed90c4eade95dcd70e2efd393b45de6a17b",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 302305000,
+            "total": 302305000
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_006_south_separated_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "e46c97c93fb81e39bc0b1e103b51595109b277ae4f0ffcd3df24376408c8516f",
+          "runtime_ns": {
+            "parse": 89209,
+            "plan": 182782791,
+            "total": 182872000
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "744ac961085ed79cad37281d714e8311362bd11448fdffdf0a5fc56d704f35ab",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 68936500,
+            "total": 68936500
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_006_south_separated_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "e46c97c93fb81e39bc0b1e103b51595109b277ae4f0ffcd3df24376408c8516f",
+          "runtime_ns": {
+            "parse": 102417,
+            "plan": 182212250,
+            "total": 182314667
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "744ac961085ed79cad37281d714e8311362bd11448fdffdf0a5fc56d704f35ab",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 68613958,
+            "total": 68613958
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_007_near",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "360790a5cc1754f4d9936e505942db30006e8d1e18b3ce779668fac66ec436f4",
+          "runtime_ns": {
+            "parse": 108791,
+            "plan": 85286375,
+            "total": 85395166
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "ff09807426c5ee4a9d4e91a7af3505203b0eab48f9d234f71d6d9bea5374c7e6",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 121592542,
+            "total": 121592542
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_007_near",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "360790a5cc1754f4d9936e505942db30006e8d1e18b3ce779668fac66ec436f4",
+          "runtime_ns": {
+            "parse": 133084,
+            "plan": 85173292,
+            "total": 85306376
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "ff09807426c5ee4a9d4e91a7af3505203b0eab48f9d234f71d6d9bea5374c7e6",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 121905667,
+            "total": 121905667
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    },
+    {
+      "case_id": "residential_008_multi_direction_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "73f080295929dca95975bcdecfb22bd7a931ad2ca3122046442083bfb358a3a3",
+          "runtime_ns": {
+            "parse": 106208,
+            "plan": 101506916,
+            "total": 101613124
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "dfe0b3c008fbb79cfff6f2e8faed7771e527b34bac7de7b1cdfc208cf9dfabe5",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 92404917,
+            "total": 92404917
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 0
+    },
+    {
+      "case_id": "residential_008_multi_direction_zh",
+      "intent_exact": false,
+      "system_id": "cp-sat-v2",
+      "tracks": {
+        "end_to_end": {
+          "failure": null,
+          "plan_valid": false,
+          "planning_succeeded": true,
+          "proposal_digest": "73f080295929dca95975bcdecfb22bd7a931ad2ca3122046442083bfb358a3a3",
+          "runtime_ns": {
+            "parse": 104500,
+            "plan": 100994542,
+            "total": 101099042
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "failure": null,
+          "plan_valid": true,
+          "planning_succeeded": true,
+          "proposal_digest": "dfe0b3c008fbb79cfff6f2e8faed7771e527b34bac7de7b1cdfc208cf9dfabe5",
+          "runtime_ns": {
+            "parse": null,
+            "plan": 90626500,
+            "total": 90626500
+          },
+          "track": "oracle_intent"
+        }
+      },
+      "trial_index": 1
+    }
+  ],
+  "schema_version": "1.0.0",
+  "systems": [
+    {
+      "attempt_count": 16,
+      "descriptor": {
+        "deterministic": true,
+        "execution_mode": "deterministic",
+        "floor_plan_agent": {
+          "name": "architecture-planner-agent",
+          "version": "2.0.0"
+        },
+        "intent_agent": {
+          "name": "requirement-agent",
+          "version": "1.0.0"
+        },
+        "model": null,
+        "planner_configuration": {
+          "random_seed": 0,
+          "rules_version": "1.0.0",
+          "strategy": "rule-based-single-row-v1"
+        },
+        "prompt_version": null,
+        "provider": null,
+        "system_id": "rule-spatial-v2",
+        "system_version": "1.0.0"
+      },
+      "intent_extraction_accuracy": {
+        "applicable": true,
+        "attempt_count": 16,
+        "coverage": 1.0,
+        "covered_attempt_count": 16,
+        "name": "intent_extraction_accuracy",
+        "reason": null,
+        "sample_count": 16,
+        "successes": 0,
+        "value": 0.0
+      },
+      "tracks": {
+        "end_to_end": {
+          "metrics": {
+            "circulation": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "circulation_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            },
+            "constraint_satisfaction": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "constraint_satisfaction_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            },
+            "plan_validity": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "plan_validity",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 0,
+              "value": 0.0
+            },
+            "planning_success": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "planning_success",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 16,
+              "value": 1.0
+            },
+            "spatial_efficiency": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "spatial_efficiency_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            },
+            "stability": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "plan_stability_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            }
+          },
+          "runtime_ns": {
+            "parse": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 114833,
+              "median_ns": 77375,
+              "minimum_ns": 52750,
+              "name": "parse_runtime_ns",
+              "p95_ns": 114833,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 1279374
+            },
+            "plan": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 27291,
+              "median_ns": 14750,
+              "minimum_ns": 13083,
+              "name": "plan_runtime_ns",
+              "p95_ns": 27291,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 274956
+            },
+            "total": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 142124,
+              "median_ns": 98416,
+              "minimum_ns": 66709,
+              "name": "total_runtime_ns",
+              "p95_ns": 142124,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 1554330
+            }
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "metrics": {
+            "circulation": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "circulation_score",
+              "reason": null,
+              "sample_count": 16,
+              "successes": null,
+              "value": 0.6412927961454384
+            },
+            "constraint_satisfaction": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "constraint_satisfaction_score",
+              "reason": null,
+              "sample_count": 16,
+              "successes": null,
+              "value": 0.9678030303030303
+            },
+            "plan_validity": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "plan_validity",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 16,
+              "value": 1.0
+            },
+            "planning_success": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "planning_success",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 16,
+              "value": 1.0
+            },
+            "spatial_efficiency": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "spatial_efficiency_score",
+              "reason": null,
+              "sample_count": 16,
+              "successes": null,
+              "value": 1.0
+            },
+            "stability": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "plan_stability_score",
+              "reason": null,
+              "sample_count": 8,
+              "successes": null,
+              "value": 1.0
+            }
+          },
+          "runtime_ns": {
+            "parse": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "maximum_ns": null,
+              "median_ns": null,
+              "minimum_ns": null,
+              "name": "parse_runtime_ns",
+              "p95_ns": null,
+              "reason": "NO_RUNTIME_SAMPLES",
+              "sample_count": 0,
+              "total_ns": null
+            },
+            "plan": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 29917,
+              "median_ns": 15500,
+              "minimum_ns": 13541,
+              "name": "plan_runtime_ns",
+              "p95_ns": 29917,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 279916
+            },
+            "total": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 29917,
+              "median_ns": 15500,
+              "minimum_ns": 13541,
+              "name": "total_runtime_ns",
+              "p95_ns": 29917,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 279916
+            }
+          },
+          "track": "oracle_intent"
+        }
+      }
+    },
+    {
+      "attempt_count": 16,
+      "descriptor": {
+        "deterministic": true,
+        "execution_mode": "deterministic",
+        "floor_plan_agent": {
+          "name": "architecture-planner-agent",
+          "version": "2.0.0"
+        },
+        "intent_agent": {
+          "name": "requirement-agent",
+          "version": "1.0.0"
+        },
+        "model": null,
+        "planner_configuration": {
+          "random_seed": 0,
+          "rules_version": "1.0.0",
+          "strategy": "cp-sat-rectilinear-v1"
+        },
+        "prompt_version": null,
+        "provider": null,
+        "system_id": "cp-sat-v2",
+        "system_version": "1.0.0"
+      },
+      "intent_extraction_accuracy": {
+        "applicable": true,
+        "attempt_count": 16,
+        "coverage": 1.0,
+        "covered_attempt_count": 16,
+        "name": "intent_extraction_accuracy",
+        "reason": null,
+        "sample_count": 16,
+        "successes": 0,
+        "value": 0.0
+      },
+      "tracks": {
+        "end_to_end": {
+          "metrics": {
+            "circulation": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "circulation_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            },
+            "constraint_satisfaction": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "constraint_satisfaction_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            },
+            "plan_validity": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "plan_validity",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 0,
+              "value": 0.0
+            },
+            "planning_success": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "planning_success",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 16,
+              "value": 1.0
+            },
+            "spatial_efficiency": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "spatial_efficiency_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            },
+            "stability": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "name": "plan_stability_score",
+              "reason": "EXACT_REFERENCE_INTENT_REQUIRED",
+              "sample_count": 0,
+              "successes": null,
+              "value": null
+            }
+          },
+          "runtime_ns": {
+            "parse": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 167542,
+              "median_ns": 106208,
+              "minimum_ns": 89209,
+              "name": "parse_runtime_ns",
+              "p95_ns": 167542,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 1801042
+            },
+            "plan": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 1433561125,
+              "median_ns": 101506916,
+              "minimum_ns": 56902167,
+              "name": "plan_runtime_ns",
+              "p95_ns": 1433561125,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 7650809041
+            },
+            "total": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 1433684208,
+              "median_ns": 101613124,
+              "minimum_ns": 57021542,
+              "name": "total_runtime_ns",
+              "p95_ns": 1433684208,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 7652610083
+            }
+          },
+          "track": "end_to_end"
+        },
+        "oracle_intent": {
+          "metrics": {
+            "circulation": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "circulation_score",
+              "reason": null,
+              "sample_count": 16,
+              "successes": null,
+              "value": 0.7691681740141303
+            },
+            "constraint_satisfaction": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "constraint_satisfaction_score",
+              "reason": null,
+              "sample_count": 16,
+              "successes": null,
+              "value": 1.0
+            },
+            "plan_validity": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "plan_validity",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 16,
+              "value": 1.0
+            },
+            "planning_success": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "planning_success",
+              "reason": null,
+              "sample_count": 16,
+              "successes": 16,
+              "value": 1.0
+            },
+            "spatial_efficiency": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "spatial_efficiency_score",
+              "reason": null,
+              "sample_count": 16,
+              "successes": null,
+              "value": 0.8576762087136128
+            },
+            "stability": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "name": "plan_stability_score",
+              "reason": null,
+              "sample_count": 8,
+              "successes": null,
+              "value": 1.0
+            }
+          },
+          "runtime_ns": {
+            "parse": {
+              "applicable": false,
+              "attempt_count": 16,
+              "coverage": 0.0,
+              "covered_attempt_count": 0,
+              "maximum_ns": null,
+              "median_ns": null,
+              "minimum_ns": null,
+              "name": "parse_runtime_ns",
+              "p95_ns": null,
+              "reason": "NO_RUNTIME_SAMPLES",
+              "sample_count": 0,
+              "total_ns": null
+            },
+            "plan": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 1592144000,
+              "median_ns": 92404917,
+              "minimum_ns": 28079958,
+              "name": "plan_runtime_ns",
+              "p95_ns": 1592144000,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 6379220168
+            },
+            "total": {
+              "applicable": true,
+              "attempt_count": 16,
+              "coverage": 1.0,
+              "covered_attempt_count": 16,
+              "maximum_ns": 1592144000,
+              "median_ns": 92404917,
+              "minimum_ns": 28079958,
+              "name": "total_runtime_ns",
+              "p95_ns": 1592144000,
+              "reason": null,
+              "sample_count": 16,
+              "total_ns": 6379220168
+            }
+          },
+          "track": "oracle_intent"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,433 @@
+{
+  "artifact_kind": "detached_floor_plan_showcase",
+  "execution": {
+    "intent_parser": {
+      "name": "recorded-mock-llm-requirement-parser",
+      "version": "1.0.0"
+    },
+    "mode": "deterministic_offline_replay",
+    "planner": {
+      "name": "architecture-planner-agent",
+      "random_seed": 0,
+      "rules_version": "1.0.0",
+      "strategy": "cp-sat-rectilinear-v1",
+      "version": "2.0.0"
+    }
+  },
+  "scenarios": [
+    {
+      "evidence": {
+        "metric_context": {
+          "context_id": "planning-showcase-v1",
+          "default_minimum_room_area": 6.0,
+          "max_runs": 1,
+          "minimum_adjacency_contact": 1.0,
+          "minimum_room_areas": [
+            {
+              "minimum_area": 4.0,
+              "room_type": "bathroom"
+            },
+            {
+              "minimum_area": 10.0,
+              "room_type": "bedroom"
+            },
+            {
+              "minimum_area": 10.0,
+              "room_type": "dining"
+            },
+            {
+              "minimum_area": 8.0,
+              "room_type": "kitchen"
+            },
+            {
+              "minimum_area": 18.0,
+              "room_type": "living"
+            },
+            {
+              "minimum_area": 8.0,
+              "room_type": "office"
+            },
+            {
+              "minimum_area": 6.0,
+              "room_type": "study"
+            }
+          ],
+          "near_distance": 8.0,
+          "precision": {
+            "decimal_places": 9,
+            "linear_tolerance": 1e-09
+          },
+          "separation_gap": 1.0
+        },
+        "schema_version": "1.0.0",
+        "systems": [
+          {
+            "metrics": {
+              "circulation": {
+                "applicable": true,
+                "name": "circulation_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 0.7106382978723405
+              },
+              "constraint_satisfaction": {
+                "applicable": true,
+                "name": "constraint_satisfaction_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 1.0
+              },
+              "spatial_efficiency": {
+                "applicable": true,
+                "name": "spatial_efficiency_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 0.8888888888888888
+              },
+              "stability": {
+                "applicable": false,
+                "name": "plan_stability_score",
+                "reason": "REPEATED_PLANS_REQUIRED",
+                "sample_count": 0,
+                "value": null
+              }
+            },
+            "proposal_digest": "79997c60ceafb22cf04e0765dfb0c3370d32464aaca9e156120fa91e01167a1b",
+            "strategy": "cp-sat-rectilinear-v1",
+            "system_id": "cp-sat-v2"
+          }
+        ]
+      },
+      "failure": null,
+      "input_requirement": "Design a 120 sqm south-facing family house with three bedrooms, a living room and a kitchen. Keep the kitchen adjacent to the living room.",
+      "intent": {
+        "area": 120,
+        "building_type": "house",
+        "orientation": "south",
+        "rooms": [
+          "bedroom",
+          "bedroom",
+          "bedroom",
+          "living",
+          "kitchen"
+        ],
+        "spatial_constraints": [
+          {
+            "relation": "adjacent_to",
+            "required": true,
+            "source_room_type": "kitchen",
+            "target_room_type": "living"
+          }
+        ]
+      },
+      "proposal": {
+        "boundary": {
+          "height": 10,
+          "width": 13.5
+        },
+        "intent": {
+          "area": 120,
+          "building_type": "house",
+          "orientation": "south",
+          "rooms": [
+            "bedroom",
+            "bedroom",
+            "bedroom",
+            "living",
+            "kitchen"
+          ],
+          "spatial_constraints": [
+            {
+              "relation": "adjacent_to",
+              "required": true,
+              "source_room_type": "kitchen",
+              "target_room_type": "living"
+            }
+          ]
+        },
+        "orientation": "south",
+        "rooms": [
+          {
+            "height": 8,
+            "orientation": "south",
+            "plan_id": "plan_room_001",
+            "room_type": "bedroom",
+            "target_area": 24,
+            "width": 3,
+            "x": 3,
+            "y": 0
+          },
+          {
+            "height": 8,
+            "orientation": "south",
+            "plan_id": "plan_room_002",
+            "room_type": "bedroom",
+            "target_area": 24,
+            "width": 3,
+            "x": 6,
+            "y": 0
+          },
+          {
+            "height": 6,
+            "orientation": "south",
+            "plan_id": "plan_room_003",
+            "room_type": "bedroom",
+            "target_area": 24,
+            "width": 4,
+            "x": 9,
+            "y": 0
+          },
+          {
+            "height": 2,
+            "orientation": "north",
+            "plan_id": "plan_room_004",
+            "room_type": "living",
+            "target_area": 24,
+            "width": 12,
+            "x": 0,
+            "y": 8
+          },
+          {
+            "height": 8,
+            "orientation": "south",
+            "plan_id": "plan_room_005",
+            "room_type": "kitchen",
+            "target_area": 24,
+            "width": 3,
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "schema_version": "2.0.0",
+        "spatial_constraints": [
+          {
+            "relation": "adjacent_to",
+            "required": true,
+            "source_plan_id": "plan_room_005",
+            "target_plan_id": "plan_room_004"
+          }
+        ],
+        "strategy": "cp-sat-rectilinear-v1"
+      },
+      "proposal_digest": "79997c60ceafb22cf04e0765dfb0c3370d32464aaca9e156120fa91e01167a1b",
+      "scenario_id": "family-house",
+      "status": "success",
+      "title": "South-facing family house"
+    },
+    {
+      "evidence": {
+        "metric_context": {
+          "context_id": "planning-showcase-v1",
+          "default_minimum_room_area": 6.0,
+          "max_runs": 1,
+          "minimum_adjacency_contact": 1.0,
+          "minimum_room_areas": [
+            {
+              "minimum_area": 4.0,
+              "room_type": "bathroom"
+            },
+            {
+              "minimum_area": 10.0,
+              "room_type": "bedroom"
+            },
+            {
+              "minimum_area": 10.0,
+              "room_type": "dining"
+            },
+            {
+              "minimum_area": 8.0,
+              "room_type": "kitchen"
+            },
+            {
+              "minimum_area": 18.0,
+              "room_type": "living"
+            },
+            {
+              "minimum_area": 8.0,
+              "room_type": "office"
+            },
+            {
+              "minimum_area": 6.0,
+              "room_type": "study"
+            }
+          ],
+          "near_distance": 8.0,
+          "precision": {
+            "decimal_places": 9,
+            "linear_tolerance": 1e-09
+          },
+          "separation_gap": 1.0
+        },
+        "schema_version": "1.0.0",
+        "systems": [
+          {
+            "metrics": {
+              "circulation": {
+                "applicable": true,
+                "name": "circulation_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 0.6590909090909092
+              },
+              "constraint_satisfaction": {
+                "applicable": true,
+                "name": "constraint_satisfaction_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 1.0
+              },
+              "spatial_efficiency": {
+                "applicable": true,
+                "name": "spatial_efficiency_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 1.0
+              },
+              "stability": {
+                "applicable": false,
+                "name": "plan_stability_score",
+                "reason": "REPEATED_PLANS_REQUIRED",
+                "sample_count": 0,
+                "value": null
+              }
+            },
+            "proposal_digest": "1e2ca503dc95e8649b51ae0b0e27562d28ca335be317c1cc6dbd7957da6fec1b",
+            "strategy": "rule-based-single-row-v1",
+            "system_id": "rule-spatial-v2"
+          },
+          {
+            "metrics": {
+              "circulation": {
+                "applicable": true,
+                "name": "circulation_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 0.8198198198198198
+              },
+              "constraint_satisfaction": {
+                "applicable": true,
+                "name": "constraint_satisfaction_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 1.0
+              },
+              "spatial_efficiency": {
+                "applicable": true,
+                "name": "spatial_efficiency_score",
+                "reason": null,
+                "sample_count": 1,
+                "value": 0.8571428571428571
+              },
+              "stability": {
+                "applicable": false,
+                "name": "plan_stability_score",
+                "reason": "REPEATED_PLANS_REQUIRED",
+                "sample_count": 0,
+                "value": null
+              }
+            },
+            "proposal_digest": "38453a8de65cf1d9cb4a636c26b8de12730ba91291d0fff41efd70e87db8676f",
+            "strategy": "cp-sat-rectilinear-v1",
+            "system_id": "cp-sat-v2"
+          }
+        ]
+      },
+      "failure": null,
+      "input_requirement": "Design a compact 72 sqm apartment with one bedroom, one bathroom, a living room and a kitchen. Keep circulation efficient.",
+      "intent": {
+        "area": 72,
+        "building_type": "apartment",
+        "orientation": null,
+        "rooms": [
+          "bedroom",
+          "bathroom",
+          "living",
+          "kitchen"
+        ]
+      },
+      "proposal": {
+        "boundary": {
+          "height": 8,
+          "width": 10.5
+        },
+        "intent": {
+          "area": 72,
+          "building_type": "apartment",
+          "orientation": null,
+          "rooms": [
+            "bedroom",
+            "bathroom",
+            "living",
+            "kitchen"
+          ]
+        },
+        "orientation": null,
+        "rooms": [
+          {
+            "height": 2,
+            "orientation": "north",
+            "plan_id": "plan_room_001",
+            "room_type": "bedroom",
+            "target_area": 18,
+            "width": 9,
+            "x": 0,
+            "y": 6
+          },
+          {
+            "height": 2,
+            "orientation": "west",
+            "plan_id": "plan_room_002",
+            "room_type": "bathroom",
+            "target_area": 18,
+            "width": 9,
+            "x": 0,
+            "y": 4
+          },
+          {
+            "height": 2,
+            "orientation": "west",
+            "plan_id": "plan_room_003",
+            "room_type": "living",
+            "target_area": 18,
+            "width": 9,
+            "x": 0,
+            "y": 2
+          },
+          {
+            "height": 2,
+            "orientation": "south",
+            "plan_id": "plan_room_004",
+            "room_type": "kitchen",
+            "target_area": 18,
+            "width": 9,
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "schema_version": "2.0.0",
+        "spatial_constraints": [],
+        "strategy": "cp-sat-rectilinear-v1"
+      },
+      "proposal_digest": "38453a8de65cf1d9cb4a636c26b8de12730ba91291d0fff41efd70e87db8676f",
+      "scenario_id": "compact-apartment",
+      "status": "success",
+      "title": "Compact apartment"
+    },
+    {
+      "evidence": null,
+      "failure": {
+        "code": "PLANNING_SOLVER_FAILED",
+        "path": "/problem",
+        "stage": "plan"
+      },
+      "input_requirement": "Design a 40 sqm house with one bedroom and one bathroom. Require the bedroom to be both north and south of the bathroom.",
+      "intent": null,
+      "proposal": null,
+      "proposal_digest": null,
+      "scenario_id": "constraint-conflict",
+      "status": "rejected",
+      "title": "Conflicting spatial constraints"
+    }
+  ],
+  "schema_version": "1.0.0"
+}
