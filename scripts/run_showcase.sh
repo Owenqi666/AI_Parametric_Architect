@@ -23,7 +23,8 @@ cleanup() {
   [[ -n "${backend_pid}" ]] && wait "${backend_pid}" 2>/dev/null || true
 }
 
-trap cleanup EXIT INT TERM
+trap cleanup EXIT
+trap 'exit 0' INT TERM
 
 for command_name in uv node npm; do
   if ! command -v "${command_name}" >/dev/null 2>&1; then
@@ -41,17 +42,47 @@ if (major < 22 || (major === 22 && minor < 13)) {
 '
 
 cd "${ROOT_DIR}"
-uv sync --dev --locked
+if [[ "${SHOWCASE_FORCE_INSTALL:-0}" == "1" || ! -x ".venv/bin/python" ]]; then
+  uv sync --dev --locked
+else
+  uv sync --dev --locked --offline
+fi
 uv run python -c '
 import sys
 if not ((3, 12) <= sys.version_info[:2] < (3, 14)):
     raise SystemExit(f"Python >=3.12,<3.14 is required; found {sys.version.split()[0]}.")
 '
 
-(
+if [[ "${SHOWCASE_FORCE_INSTALL:-0}" == "1" || ! -d "frontend/node_modules" ]] || ! (
   cd frontend
-  npm ci
-)
+  npm ls --depth=0 >/dev/null 2>&1
+); then
+  (
+    cd frontend
+    npm ci
+  )
+else
+  echo "Verified locked frontend dependencies."
+fi
+
+uv run python - "${BACKEND_HOST}" "${BACKEND_PORT}" "${FRONTEND_HOST}" "${FRONTEND_PORT}" <<'PY'
+import socket
+import sys
+
+sockets: list[socket.socket] = []
+for label, host, raw_port in (
+    ("FastAPI", sys.argv[1], sys.argv[2]),
+    ("Studio", sys.argv[3], sys.argv[4]),
+):
+    try:
+        port = int(raw_port)
+        listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        listener.bind((host, port))
+        listener.listen(1)
+    except (OSError, ValueError) as error:
+        raise SystemExit(f"{label} cannot bind to {host}:{raw_port}: {error}") from error
+    sockets.append(listener)
+PY
 
 uv run uvicorn ai_parametric_architect.backend.api:app \
   --host "${BACKEND_HOST}" \
@@ -61,7 +92,7 @@ backend_pid=$!
 (
   cd frontend
   SHOWCASE_API_ORIGIN="${BACKEND_URL}" npm run dev -- \
-    --host "${FRONTEND_HOST}" \
+    --hostname "${FRONTEND_HOST}" \
     --port "${FRONTEND_PORT}"
 ) &
 frontend_pid=$!
@@ -77,4 +108,3 @@ done
 
 echo "A showcase process stopped unexpectedly." >&2
 exit 1
-

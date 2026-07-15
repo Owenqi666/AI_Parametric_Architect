@@ -72,9 +72,7 @@ def test_checked_in_benchmark_truthfully_separates_parser_and_cp_sat_results() -
     assert end_to_end["planning_success"]["value"] == 1.0
     assert end_to_end["plan_validity"]["value"] == 0.0
     assert end_to_end["constraint_satisfaction"]["applicable"] is False
-    assert end_to_end["constraint_satisfaction"]["reason"] == (
-        "EXACT_REFERENCE_INTENT_REQUIRED"
-    )
+    assert end_to_end["constraint_satisfaction"]["reason"] == ("EXACT_REFERENCE_INTENT_REQUIRED")
     assert oracle["planning_success"]["value"] == 1.0
     assert oracle["plan_validity"]["value"] == 1.0
     assert oracle["constraint_satisfaction"]["value"] == 1.0

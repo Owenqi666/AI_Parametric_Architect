@@ -12,6 +12,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MODEL_PATH = PROJECT_ROOT / "examples" / "showcase_house.json"
 RENDER_IR_PATH = PROJECT_ROOT / "frontend" / "public" / "examples" / "showcase-house.render-ir.json"
 SVG_PATH = PROJECT_ROOT / "frontend" / "public" / "examples" / "showcase-house.svg"
+SIMPLE_MODEL_PATH = PROJECT_ROOT / "examples" / "valid_simple_house.json"
+SIMPLE_SVG_PATH = PROJECT_ROOT / "frontend" / "public" / "examples" / "simple-house.svg"
 
 
 def main() -> int:
@@ -24,6 +26,11 @@ def main() -> int:
         encoding="utf-8",
     )
     SVG_PATH.write_text(svg, encoding="utf-8")
+    simple_model = cast(
+        dict[str, Any],
+        json.loads(SIMPLE_MODEL_PATH.read_text(encoding="utf-8")),
+    )
+    SIMPLE_SVG_PATH.write_text(service.render_svg(simple_model), encoding="utf-8")
     return 0
 
 

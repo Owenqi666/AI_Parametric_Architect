@@ -3,10 +3,16 @@ from __future__ import annotations
 import json
 from collections import Counter
 
+import pytest
+
 from ai_parametric_architect.planning import CP_SAT_STRATEGY
 from ai_parametric_architect.showcase import (
+    MAX_SHOWCASE_REQUIREMENT_BYTES,
     SHOWCASE_ARTIFACT_KIND,
     SHOWCASE_EXECUTION_MODE,
+    ShowcaseCase,
+    ShowcaseFailure,
+    ShowcaseStage,
     ShowcaseStatus,
     canonical_proposal_digest,
 )
@@ -48,7 +54,7 @@ def test_showcase_has_two_solved_previews_and_one_fail_closed_case() -> None:
     assert family.proposal_digest == canonical_proposal_digest(family.proposal)
     assert compact.proposal_digest == canonical_proposal_digest(compact.proposal)
     assert conflict.status is ShowcaseStatus.REJECTED
-    assert conflict.intent is None
+    assert conflict.intent == SHOWCASE_INTENTS[2]
     assert conflict.proposal is None
     assert conflict.proposal_digest is None
     assert conflict.evidence is None
@@ -77,9 +83,7 @@ def test_recorded_mock_intents_exactly_preserve_requested_semantics() -> None:
             }
         ],
     }
-    assert Counter(family.rooms) == Counter(
-        {"bedroom": 3, "living": 1, "kitchen": 1}
-    )
+    assert Counter(family.rooms) == Counter({"bedroom": 3, "living": 1, "kitchen": 1})
     assert compact.building_type == "apartment"
     assert compact.area == 72
     assert Counter(compact.rooms) == Counter(
@@ -124,3 +128,35 @@ def test_showcase_metrics_are_real_single_proposal_evaluator_results() -> None:
             assert system.report.circulation_score.applicable
             assert not system.report.plan_stability_score.applicable
             assert system.report.plan_stability_score.reason == "REPEATED_PLANS_REQUIRED"
+
+
+def test_showcase_failure_rejects_noncanonical_public_fields() -> None:
+    with pytest.raises(TypeError, match="ShowcaseStage"):
+        ShowcaseFailure(
+            stage="plan",  # type: ignore[arg-type]
+            code="PLANNING_SOLVER_FAILED",
+            path="/problem",
+        )
+    with pytest.raises(ValueError, match="canonical stable error code"):
+        ShowcaseFailure(
+            stage=ShowcaseStage.PLAN,
+            code="planning_solver_failed",
+            path="/problem",
+        )
+    with pytest.raises(ValueError, match="JSON pointer"):
+        ShowcaseFailure(
+            stage=ShowcaseStage.PLAN,
+            code="PLANNING_SOLVER_FAILED",
+            path="problem",
+        )
+
+
+def test_showcase_requirement_enforces_utf8_byte_budget() -> None:
+    oversized_requirement = "é" * (MAX_SHOWCASE_REQUIREMENT_BYTES // 2 + 1)
+
+    with pytest.raises(ValueError, match="byte budget"):
+        ShowcaseCase(
+            scenario_id="byte-budget",
+            title="Byte budget",
+            input_requirement=oversized_requirement,
+        )

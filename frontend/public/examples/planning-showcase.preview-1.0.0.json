@@ -421,7 +421,29 @@
         "stage": "plan"
       },
       "input_requirement": "Design a 40 sqm house with one bedroom and one bathroom. Require the bedroom to be both north and south of the bathroom.",
-      "intent": null,
+      "intent": {
+        "area": 40,
+        "building_type": "house",
+        "orientation": null,
+        "rooms": [
+          "bedroom",
+          "bathroom"
+        ],
+        "spatial_constraints": [
+          {
+            "relation": "north_of",
+            "required": true,
+            "source_room_type": "bedroom",
+            "target_room_type": "bathroom"
+          },
+          {
+            "relation": "south_of",
+            "required": true,
+            "source_room_type": "bedroom",
+            "target_room_type": "bathroom"
+          }
+        ]
+      },
       "proposal": null,
       "proposal_digest": null,
       "scenario_id": "constraint-conflict",

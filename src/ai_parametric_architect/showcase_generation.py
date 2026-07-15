@@ -58,9 +58,7 @@ DEFAULT_BENCHMARK_OUTPUT = (
     PROJECT_ROOT / "frontend/public/examples/planning-core.benchmark-report-1.0.0.json"
 )
 BENCHMARK_DATASET = PROJECT_ROOT / "benchmarks/datasets/planning-core-1.0.0.json"
-BENCHMARK_ANNOTATIONS = (
-    PROJECT_ROOT / "benchmarks/annotations/planning-core-reference-1.0.0.json"
-)
+BENCHMARK_ANNOTATIONS = PROJECT_ROOT / "benchmarks/annotations/planning-core-reference-1.0.0.json"
 BENCHMARK_TRIALS = 2
 
 FAMILY_HOUSE_REQUIREMENT = (

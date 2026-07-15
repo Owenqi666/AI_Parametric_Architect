@@ -13,3 +13,5 @@ build/
 *.egg-info/
 *.svg
 !examples/*.svg
+!frontend/app/icon.svg
+!frontend/public/examples/simple-house.svg

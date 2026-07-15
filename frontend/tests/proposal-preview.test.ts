@@ -1,12 +1,20 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { parseRenderIr } from "../lib/render-ir/parse";
 import {
   parsePlanningShowcase,
   ProposalPreviewAdmissionError,
 } from "../lib/proposal-preview/parse";
+import {
+  loadPlanningShowcase,
+  MAX_SHOWCASE_BYTES,
+} from "../lib/proposal-preview/source";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 function rawShowcase(): Record<string, unknown> {
   return JSON.parse(
@@ -56,11 +64,26 @@ describe("detached proposal preview admission", () => {
     expect(() => parsePlanningShowcase(overlapping)).toThrow(/must not overlap/);
   });
 
-  it("requires rejected scenarios to remain output-free", () => {
+  it("requires rejected scenarios to remain proposal-output-free", () => {
     const raw = rawShowcase();
     const scenarios = raw.scenarios as Record<string, unknown>[];
     const rejected = scenarios.find((scenario) => scenario.status === "rejected");
     rejected!.proposal_digest = "0".repeat(64);
     expect(() => parsePlanningShowcase(raw)).toThrow(/cannot contain proposal output/);
+  });
+
+  it("rejects a cross-origin redirect before reading showcase data", async () => {
+    const response = new Response(JSON.stringify(rawShowcase()), { status: 200 });
+    Object.defineProperty(response, "url", { value: "https://untrusted.example/showcase.json" });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
+
+    await expect(loadPlanningShowcase()).rejects.toThrow("Showcase data must be same-origin.");
+  });
+
+  it("stops streamed reads when the showcase byte budget is exceeded", async () => {
+    const payload = new Uint8Array(MAX_SHOWCASE_BYTES + 1);
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(payload, { status: 200 })));
+
+    await expect(loadPlanningShowcase()).rejects.toThrow("exceeds the 1 MiB response budget");
   });
 });

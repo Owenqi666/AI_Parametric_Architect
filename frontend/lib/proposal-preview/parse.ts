@@ -156,6 +156,13 @@ function parseScenario(value: unknown, path: string): ShowcaseScenario {
   }
   if (item.evidence !== null) fail("Rejected scenarios cannot contain metric evidence.", `${path}/evidence`);
   const intent = item.intent === null ? null : parseIntent(item.intent, `${path}/intent`);
+  const failure = parseFailure(item.failure, `${path}/failure`);
+  if (failure.stage === "intent" && intent !== null) {
+    fail("Intent-stage failures cannot retain a DesignIntent.", `${path}/intent`);
+  }
+  if (failure.stage === "plan" && intent === null) {
+    fail("Plan-stage failures must retain the parsed DesignIntent.", `${path}/intent`);
+  }
   return {
     scenario_id: scenarioId,
     title,
@@ -164,7 +171,7 @@ function parseScenario(value: unknown, path: string): ShowcaseScenario {
     intent,
     proposal: null,
     proposal_digest: null,
-    failure: parseFailure(item.failure, `${path}/failure`),
+    failure,
     evidence: null,
   };
 }

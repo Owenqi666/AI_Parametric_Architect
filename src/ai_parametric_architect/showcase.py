@@ -157,9 +157,10 @@ class ShowcaseSystemEvidence:
     def __post_init__(self) -> None:
         _require_identifier(self.system_id, "system_id")
         _require_text(self.strategy, "strategy", maximum=256)
-        if not isinstance(self.proposal_digest, str) or _SHA256.fullmatch(
-            self.proposal_digest
-        ) is None:
+        if (
+            not isinstance(self.proposal_digest, str)
+            or _SHA256.fullmatch(self.proposal_digest) is None
+        ):
             raise ValueError("proposal_digest must be a lowercase SHA-256 digest.")
         if not isinstance(self.report, PlanningMetricsReport):
             raise TypeError("report must be a PlanningMetricsReport.")
@@ -174,9 +175,7 @@ class ShowcaseSystemEvidence:
             "strategy": self.strategy,
             "proposal_digest": self.proposal_digest,
             "metrics": {
-                "constraint_satisfaction": _metric_dict(
-                    self.report.constraint_satisfaction_score
-                ),
+                "constraint_satisfaction": _metric_dict(self.report.constraint_satisfaction_score),
                 "spatial_efficiency": _metric_dict(self.report.spatial_efficiency_score),
                 "circulation": _metric_dict(self.report.circulation_score),
                 "stability": _metric_dict(self.report.plan_stability_score),
@@ -251,13 +250,14 @@ class ShowcaseScenario:
             ):
                 raise ValueError("Showcase evidence must include the primary proposal.")
             return
-        if any(
-            value is not None
-            for value in (self.intent, self.proposal, self.proposal_digest)
-        ):
-            raise ValueError("Rejected showcase scenarios cannot retain typed outputs.")
         if not isinstance(self.failure, ShowcaseFailure):
             raise TypeError("Rejected showcase scenarios require a stable failure.")
+        if self.proposal is not None or self.proposal_digest is not None:
+            raise ValueError("Rejected showcase scenarios cannot retain proposal output.")
+        if self.failure.stage is ShowcaseStage.INTENT and self.intent is not None:
+            raise ValueError("Intent-stage failures cannot retain a DesignIntent.")
+        if self.failure.stage is ShowcaseStage.PLAN and type(self.intent) is not DesignIntent:
+            raise TypeError("Plan-stage failures must retain the parsed DesignIntent.")
         if self.evidence is not None:
             raise ValueError("Rejected showcase scenarios cannot contain metric evidence.")
 
@@ -339,7 +339,7 @@ def build_planning_showcase(
         try:
             proposal = floor_plan_agent.run(intent)
         except PlanningError as error:
-            scenarios.append(_rejected(case, ShowcaseStage.PLAN, error))
+            scenarios.append(_rejected(case, ShowcaseStage.PLAN, error, intent=intent))
             continue
         if type(proposal) is not FloorPlanProposal:
             raise TypeError("Showcase planner must return an exact FloorPlanProposal.")
@@ -376,13 +376,15 @@ def _rejected(
     case: ShowcaseCase,
     stage: ShowcaseStage,
     error: PlanningError,
+    *,
+    intent: DesignIntent | None = None,
 ) -> ShowcaseScenario:
     return ShowcaseScenario(
         scenario_id=case.scenario_id,
         title=case.title,
         input_requirement=case.input_requirement,
         status=ShowcaseStatus.REJECTED,
-        intent=None,
+        intent=intent,
         proposal=None,
         proposal_digest=None,
         failure=ShowcaseFailure(stage=stage, code=error.code, path=error.path),
