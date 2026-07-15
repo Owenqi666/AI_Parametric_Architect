@@ -34,18 +34,34 @@ flowchart LR
 
 ## 一键离线演示
 
-需要 Python 3.12–3.13、`uv` 和 Node.js `>=22.13.0`。首次运行会校验并安装锁定依赖：
+需要 Python 3.12–3.13、`uv`、Node.js `>=22.13.0` 和 npm。推荐在 macOS、Linux
+或 WSL2 中运行；原生 Windows 尚未验证。
 
 ```bash
-./scripts/run_showcase.sh
-# 或
+git clone https://github.com/Owenqi666/AI_Parametric_Architect.git
+cd AI_Parametric_Architect
+
+python3 --version
+uv --version
+node --version
+npm --version
+
 make showcase
 ```
 
-打开 `http://127.0.0.1:3000`。FastAPI 运行在 `http://127.0.0.1:8000`；`Ctrl+C`
-会清理两个子进程。锁定依赖已安装或缓存后，默认演示不需要 API key、网络、
-数据库或手动生成 fixture；首次冷安装仍可能需要软件包注册表。
-详见 [Showcase 指南](docs/SHOWCASE.md)。作品集文档还包括
+首次运行会校验并安装锁定依赖。等待终端出现 Vite 的 `Local` 地址和 Uvicorn 的
+`Application startup complete` 后，打开 `http://127.0.0.1:3000`。FastAPI 运行在
+`http://127.0.0.1:8000`；`Ctrl+C` 会清理两个子进程。
+
+端口被占用时可以显式覆盖：
+
+```bash
+SHOWCASE_BACKEND_PORT=8010 SHOWCASE_FRONTEND_PORT=3010 make showcase
+```
+
+锁定依赖已安装或缓存后，默认演示不需要 API key、网络、数据库或手动生成 fixture；
+首次冷安装仍可能需要软件包注册表。详见[中文使用指南](docs/USER_GUIDE.zh-CN.md)和
+[Showcase 指南](docs/SHOWCASE.md)。作品集文档还包括
 [案例研究](docs/CASE_STUDY.md)、[架构概览](docs/ARCHITECTURE_OVERVIEW.md)、
 [Benchmark 方法](docs/BENCHMARK_METHODOLOGY.md)和[演示录制脚本](docs/DEMO_SCRIPT.md)。
 
@@ -56,6 +72,22 @@ make showcase
 | World Model Explorer | Architecture & Safety |
 | --- | --- |
 | ![World Model Explorer](docs/images/world-model-explorer.png) | ![Architecture and Safety](docs/images/architecture-safety.png) |
+
+## 5 分钟使用指南
+
+1. 在 **Design Studio** 保持 `South-facing family house`，点击 **Run planning**。
+   查看类型化 DesignIntent，然后选择 Kitchen，确认邻接约束和三条 detached 警告。
+2. 切换到 `Compact apartment`，查看 baseline 与 CP-SAT 的效率、circulation proxy
+   和稳定性证据。
+3. 运行 `Conflicting spatial constraints`，确认系统显示
+   `PLANNING_SOLVER_FAILED`，且不生成 Proposal 或伪造指标。
+4. 打开 **Benchmark Lab**，在 End-to-end 与 Oracle intent 之间切换；可使用
+   **Import report** 导入通过 `BenchmarkReport 1.0.0` 严格准入的本地报告。
+5. 打开 **World Model**，搜索或选择实体、切换楼层并使用 Fit/Top/Isometric；最后在
+   **Architecture & Safety** 查看 Proposal、Authorization、CAS 和 Render IR 的权限边界。
+
+注意：编辑为未收录的自然语言后，离线模式会以 `SHOWCASE_INPUT_NOT_RECORDED` 失败关闭。
+这不是输入框故障，也不会静默调用网络或伪造 solver 结果。
 
 ## 技术亮点与诚实边界
 
