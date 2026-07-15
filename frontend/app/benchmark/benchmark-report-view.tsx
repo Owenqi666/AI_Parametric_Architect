@@ -94,9 +94,13 @@ function SystemCard({ system, track }: { readonly system: BenchmarkSystemReport;
       </dl>
 
       <div className={styles.intentMetric}>
-        <span>Intent exactness</span>
-        <strong>{formatPercent(system.intent_extraction_accuracy.value)}</strong>
-        <small>{formatMetricEvidence(system.intent_extraction_accuracy)}</small>
+        <span>{track === "oracle_intent" ? "E2E parser exactness · not used" : "E2E parser exactness"}</span>
+        <strong>{track === "oracle_intent" ? "N/A" : formatPercent(system.intent_extraction_accuracy.value)}</strong>
+        <small>
+          {track === "oracle_intent"
+            ? "Oracle track supplies reference intent directly."
+            : formatMetricEvidence(system.intent_extraction_accuracy)}
+        </small>
       </div>
 
       <div className={styles.metricGrid}>
@@ -147,8 +151,8 @@ export function BenchmarkReportView({ report, sourceLabel }: BenchmarkReportView
       (left, right) =>
         left.system_id.localeCompare(right.system_id) || left.trial_index - right.trial_index,
     );
-  const openAiSystems = report.systems.filter((system) =>
-    system.descriptor.provider?.toLowerCase().includes("openai"),
+  const openAiSystems = report.systems.filter(
+    (system) => system.descriptor.provider === "openai-responses",
   );
 
   return (
@@ -194,10 +198,11 @@ export function BenchmarkReportView({ report, sourceLabel }: BenchmarkReportView
 
       {openAiSystems.length > 0 ? (
         <aside className={styles.networkNotice} aria-label="OpenAI evidence notice">
-          <strong>OpenAI-backed evidence is present.</strong>
+          <strong>Report declares OpenAI Responses evidence.</strong>
           <span>
-            {openAiSystems.map((system) => system.descriptor.system_id).join(", ")} is marked real
-            nondeterministic; compare its run metadata and coverage before drawing conclusions.
+            Report metadata marks {openAiSystems.map((system) => system.descriptor.system_id).join(", ")} as real
+            nondeterministic. Treat provider/model fields as declared metadata and compare coverage
+            before drawing conclusions.
           </span>
         </aside>
       ) : null}
@@ -248,6 +253,25 @@ export function BenchmarkReportView({ report, sourceLabel }: BenchmarkReportView
         aria-labelledby={`${tabIdPrefix}-${track}`}
         className={styles.trackPanel}
       >
+        {track === "end_to_end" ? (
+          <aside className={styles.trackNotice} aria-label="End-to-end coverage explanation">
+            <strong>Why several spatial metrics are N/A</strong>
+            <span>
+              The bundled deterministic parser produced plans but did not exactly match the external
+              reference intents. Spatial scores therefore remain uncovered instead of scoring a
+              different intent as though it were the reference. Switch to Oracle intent to inspect
+              planner-only evidence.
+            </span>
+          </aside>
+        ) : (
+          <aside className={styles.trackNotice} aria-label="Oracle-intent coverage explanation">
+            <strong>Planner-only evidence</strong>
+            <span>
+              This track bypasses intent parsing and supplies the external reference intent directly.
+              It isolates planner behavior; it is not an end-to-end product score.
+            </span>
+          </aside>
+        )}
         <section aria-labelledby="system-comparison-heading">
           <div className={styles.sectionHeading}>
             <div>

@@ -34,7 +34,7 @@
 
 * { box-sizing: border-box; }
 html, body { min-height: 100%; margin: 0; }
-body { overflow: hidden; }
+body { overflow-x: hidden; overflow-y: auto; }
 button { font: inherit; }
 select, textarea, input { font: inherit; }
 button:focus-visible, canvas:focus-visible {
@@ -177,7 +177,7 @@ a:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visib
   background: rgba(14, 22, 24, 0.86);
 }
 .authority-overlay strong { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
-.authority-overlay span, .authority-overlay small { color: #aeb6b6; font: 8px/1.35 var(--font-mono); }
+.authority-overlay span, .authority-overlay small { color: #aeb6b6; font: 10px/1.4 var(--font-mono); }
 .axis-key {
   position: absolute;
   left: 24px;

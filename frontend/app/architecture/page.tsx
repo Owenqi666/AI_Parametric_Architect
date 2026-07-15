@@ -5,7 +5,7 @@ import { ProductShell } from "../components/product-shell";
 import styles from "./architecture.module.css";
 
 export const metadata: Metadata = {
-  title: "Architecture & Safety — AI Parametric Architect Studio",
+  title: "Architecture & Safety",
   description:
     "The trust boundaries that keep AI intent, solver proposals, rendering, and authoritative JSON revisions separate.",
 };
@@ -105,7 +105,7 @@ const BOUNDARIES = [
   {
     number: "04",
     title: "Render IR is a read-only projection",
-    text: "Only a completely validated authoritative ModelDocument can produce Render IR 1.0.0. The browser admits that versioned derivative and builds a disposable Three.js scene with no Patch or repository client.",
+    text: "Render IR 1.0.0 is produced only after complete model validation. In this explorer it is a derived projection of the selected JSON revision; the browser builds a disposable Three.js scene with no Patch or repository client.",
     evidence: "Derived read-only · Reproducible from revision",
   },
   {
@@ -135,7 +135,7 @@ export default function ArchitectureSafetyPage() {
   return (
     <ProductShell active="architecture" density="document">
       <div className={styles.page}>
-        <main id="architecture-content" className={styles.main}>
+        <div id="architecture-content" className={styles.main}>
         <section className={styles.hero} aria-labelledby="architecture-title">
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>Trust architecture · Contract 01</p>
@@ -297,7 +297,7 @@ export default function ArchitectureSafetyPage() {
           </div>
           <Link href="/">Return to Design Studio <span aria-hidden="true">↗</span></Link>
         </footer>
-        </main>
+        </div>
       </div>
     </ProductShell>
   );

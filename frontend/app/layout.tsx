@@ -10,8 +10,15 @@ export const metadata: Metadata = {
   description: "A safe, constraint-aware world-model planning environment for architectural AI.",
   openGraph: {
     title: "AI Parametric Architect Studio",
-    description: "Natural-language intent, detached constraint planning, reproducible benchmarks, and an authoritative read-only World Model.",
+    description:
+      "Natural-language intent, detached constraint planning, reproducible benchmarks, and an authoritative read-only World Model.",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Parametric Architect Studio",
+    description:
+      "Safe architectural AI planning with detached proposals, reproducible evidence, and a read-only World Model.",
   },
 };
 

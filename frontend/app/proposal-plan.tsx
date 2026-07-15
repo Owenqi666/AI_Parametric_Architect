@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { roomLabel } from "@/lib/proposal-preview/labels";
 import type { DetachedFloorPlanProposal, PreviewRoom } from "@/lib/proposal-preview/types";
 import styles from "./design-studio.module.css";
 
@@ -7,18 +8,6 @@ interface ProposalPlanProps {
   readonly selectedPlanId: string | null;
   readonly onSelect: (planId: string) => void;
 }
-
-const ROOM_LABELS: Readonly<Record<string, string>> = {
-  bathroom: "Bathroom",
-  bedroom: "Bedroom",
-  dining: "Dining",
-  dining_room: "Dining",
-  kitchen: "Kitchen",
-  living: "Living",
-  living_room: "Living",
-  office: "Office",
-  storage: "Storage",
-};
 
 function roomCenter(room: PreviewRoom, boundaryHeight: number): readonly [number, number] {
   return [room.x + room.width / 2, boundaryHeight - room.y - room.height / 2];
@@ -80,11 +69,11 @@ export function ProposalPlan({ proposal, selectedPlanId, onSelect }: ProposalPla
               data-selected={selectedPlanId === room.plan_id}
               style={roomStyle}
               aria-pressed={selectedPlanId === room.plan_id}
-              aria-label={`${ROOM_LABELS[room.room_type] ?? room.room_type}, ${(room.width * room.height).toFixed(1)} square metres, ${room.orientation} orientation`}
+              aria-label={`${roomLabel(room.room_type)}, ${(room.width * room.height).toFixed(1)} square metres, ${room.orientation} orientation`}
               onClick={() => onSelect(room.plan_id)}
             >
               <span className={styles.roomIndex}>{String(index + 1).padStart(2, "0")}</span>
-              <span className={styles.roomName}>{ROOM_LABELS[room.room_type] ?? room.room_type}</span>
+              <span className={styles.roomName}>{roomLabel(room.room_type)}</span>
               <span className={styles.roomArea}>{(room.width * room.height).toFixed(1)} m²</span>
               <span className={styles.roomOrientation}>{room.orientation}</span>
             </button>
@@ -103,8 +92,4 @@ export function ProposalPlan({ proposal, selectedPlanId, onSelect }: ProposalPla
       </div>
     </div>
   );
-}
-
-export function roomLabel(roomType: string): string {
-  return ROOM_LABELS[roomType] ?? roomType.replaceAll("_", " ");
 }

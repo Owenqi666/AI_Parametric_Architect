@@ -10,7 +10,10 @@ interface WorldModelViewerProps {
   readonly source?: string;
   readonly embedded?: boolean;
   readonly onSnapshot?: (snapshot: WorldModelViewSnapshot) => void;
-  readonly selectionRequest?: string | null;
+  readonly selectionRequest?: {
+    readonly entityId: string | null;
+    readonly requestId: number;
+  } | null;
 }
 
 export interface WorldModelViewSnapshot {
@@ -106,7 +109,9 @@ export function WorldModelViewer({
   };
 
   useEffect(() => {
-    if (selectionRequest !== undefined) controllerRef.current?.selectEntity(selectionRequest);
+    if (selectionRequest !== undefined) {
+      controllerRef.current?.selectEntity(selectionRequest?.entityId ?? null);
+    }
   }, [renderIr, selectionRequest]);
 
   const toggleFullscreen = () => {
@@ -137,7 +142,7 @@ export function WorldModelViewer({
         <button type="button" onClick={() => controllerRef.current?.viewTop()}>
           Top
         </button>
-        <button type="button" onClick={() => controllerRef.current?.viewIsometric()}>
+        <button type="button" onClick={() => controllerRef.current?.fitVisible()}>
           Fit
         </button>
         <button type="button" onClick={toggleFullscreen}>

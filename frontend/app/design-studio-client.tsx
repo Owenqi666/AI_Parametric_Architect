@@ -1,21 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { loadPlanningShowcase } from "@/lib/proposal-preview/source";
 import type {
+  PreviewDesignIntent,
   PreviewMetricResult,
   PreviewRoom,
   ShowcaseScenario,
   SuccessfulShowcaseScenario,
 } from "@/lib/proposal-preview/types";
-import { ProposalPlan, roomLabel } from "./proposal-plan";
+import { roomLabel } from "@/lib/proposal-preview/labels";
+import { ProposalPlan } from "./proposal-plan";
 import { WorldModelViewer, type WorldModelViewSnapshot } from "./viewer-client";
 import styles from "./design-studio.module.css";
 
 type StageStatus = "pending" | "running" | "succeeded" | "failed" | "not_applicable";
 type PipelineStageId = "requirement" | "intent" | "planning" | "evaluation" | "world_model";
 type ViewportMode = "proposal" | "world-model";
-type ExecutionMode = "offline" | "recorded" | "openai";
+type ExecutionMode = "offline" | "recorded";
+const VIEWPORT_MODES: readonly ViewportMode[] = ["proposal", "world-model"];
 
 interface PipelineStage {
   readonly id: PipelineStageId;
@@ -57,10 +60,19 @@ function completedStages(scenario: ShowcaseScenario): Record<PipelineStageId, St
       world_model: "not_applicable",
     };
   }
+  if (scenario.failure.stage === "plan") {
+    return {
+      requirement: "succeeded",
+      intent: "succeeded",
+      planning: "failed",
+      evaluation: "not_applicable",
+      world_model: "not_applicable",
+    };
+  }
   return {
-    requirement: scenario.intent ? "succeeded" : "failed",
-    intent: scenario.intent ? "succeeded" : "not_applicable",
-    planning: scenario.intent ? "failed" : "not_applicable",
+    requirement: "succeeded",
+    intent: "failed",
+    planning: "not_applicable",
     evaluation: "not_applicable",
     world_model: "not_applicable",
   };
@@ -81,8 +93,7 @@ export function DesignStudioClient() {
   const [scenarios, setScenarios] = useState<readonly ShowcaseScenario[]>([]);
   const [scenarioId, setScenarioId] = useState("");
   const [requirement, setRequirement] = useState("");
-  const [executionMode, setExecutionMode] = useState<ExecutionMode>("offline");
-  const [openAiLiveAvailable, setOpenAiLiveAvailable] = useState(false);
+  const [executionMode, setExecutionMode] = useState<ExecutionMode>("recorded");
   const [viewportMode, setViewportMode] = useState<ViewportMode>("proposal");
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [stageStatuses, setStageStatuses] = useState<Record<PipelineStageId, StageStatus>>(EMPTY_STAGES);
@@ -91,6 +102,8 @@ export function DesignStudioClient() {
   const [inputFailure, setInputFailure] = useState<string | null>(null);
   const [worldSnapshot, setWorldSnapshot] = useState<WorldModelViewSnapshot>(EMPTY_WORLD_SNAPSHOT);
   const runVersion = useRef(0);
+  const viewportPanelId = useId();
+  const viewportTabIdPrefix = useId();
 
   useEffect(() => {
     const abort = new AbortController();
@@ -112,25 +125,6 @@ export function DesignStudioClient() {
         setArtifactStatus("error");
         setArtifactError(error instanceof Error ? error.message : "Showcase data could not be admitted.");
       });
-    return () => abort.abort();
-  }, []);
-
-  useEffect(() => {
-    const abort = new AbortController();
-    void fetch("/v1/capabilities", { credentials: "same-origin", signal: abort.signal })
-      .then(async (response) => {
-        if (!response.ok) return null;
-        return (await response.json()) as unknown;
-      })
-      .then((value) => {
-        if (abort.signal.aborted || value === null || typeof value !== "object") return;
-        const capabilities = value as Record<string, unknown>;
-        setOpenAiLiveAvailable(
-          capabilities.openai_requirement_parser_available === true &&
-            capabilities.live_planning_preview_available === true,
-        );
-      })
-      .catch(() => undefined);
     return () => abort.abort();
   }, []);
 
@@ -226,6 +220,25 @@ export function DesignStudioClient() {
     setWorldSnapshot(snapshot);
   }, []);
 
+  const handleViewportTabKey = (event: React.KeyboardEvent<HTMLButtonElement>, mode: ViewportMode) => {
+    const currentIndex = VIEWPORT_MODES.indexOf(mode);
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight") {
+      nextIndex = (currentIndex + 1) % VIEWPORT_MODES.length;
+    } else if (event.key === "ArrowLeft") {
+      nextIndex = (currentIndex - 1 + VIEWPORT_MODES.length) % VIEWPORT_MODES.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = VIEWPORT_MODES.length - 1;
+    }
+    if (nextIndex === null) return;
+    event.preventDefault();
+    const nextMode = VIEWPORT_MODES[nextIndex]!;
+    setViewportMode(nextMode);
+    document.getElementById(`${viewportTabIdPrefix}-${nextMode}`)?.focus();
+  };
+
   if (artifactStatus !== "ready") {
     return (
       <section className={styles.pageState} role={artifactStatus === "error" ? "alert" : "status"}>
@@ -281,9 +294,15 @@ export function DesignStudioClient() {
           >
             <option value="offline">Offline deterministic</option>
             <option value="recorded">Recorded showcase replay</option>
-            {openAiLiveAvailable ? <option value="openai">OpenAI live · intent only</option> : null}
           </select>
-          <span className={styles.modeBadge}>Recorded deterministic showcase</span>
+          <span className={styles.modeBadge}>
+            {executionMode === "recorded"
+              ? "Recorded deterministic showcase"
+              : "Validated offline artifact replay"}
+          </span>
+          <small>
+            Both modes replay strictly admitted evidence. No provider or solver executes in the browser.
+          </small>
         </div>
 
         <div className={styles.actionRow}>
@@ -313,6 +332,7 @@ export function DesignStudioClient() {
             ))}
           </ol>
         </section>
+        {showOutput && activeScenario?.intent ? <IntentSummary intent={activeScenario.intent} /> : null}
       </aside>
 
       <section className={styles.viewportPanel} aria-label="Planning and World Model viewport">
@@ -323,18 +343,26 @@ export function DesignStudioClient() {
           </div>
           <div className={styles.modeSwitcher} role="tablist" aria-label="Viewport authority mode">
             <button
+              id={`${viewportTabIdPrefix}-proposal`}
               type="button"
               role="tab"
               aria-selected={viewportMode === "proposal"}
+              aria-controls={viewportPanelId}
+              tabIndex={viewportMode === "proposal" ? 0 : -1}
               onClick={() => setViewportMode("proposal")}
+              onKeyDown={(event) => handleViewportTabKey(event, "proposal")}
             >
               Proposal
             </button>
             <button
+              id={`${viewportTabIdPrefix}-world-model`}
               type="button"
               role="tab"
               aria-selected={viewportMode === "world-model"}
+              aria-controls={viewportPanelId}
+              tabIndex={viewportMode === "world-model" ? 0 : -1}
               onClick={() => setViewportMode("world-model")}
+              onKeyDown={(event) => handleViewportTabKey(event, "world-model")}
             >
               World Model
             </button>
@@ -342,7 +370,12 @@ export function DesignStudioClient() {
         </header>
 
         {viewportMode === "proposal" ? (
-          <div className={styles.proposalViewport} role="tabpanel">
+          <div
+            id={viewportPanelId}
+            className={styles.proposalViewport}
+            role="tabpanel"
+            aria-labelledby={`${viewportTabIdPrefix}-proposal`}
+          >
             <div className={styles.detachedBanner}>
               <strong>Detached Proposal</strong>
               <span>Not committed to World Model</span>
@@ -373,7 +406,12 @@ export function DesignStudioClient() {
             )}
           </div>
         ) : (
-          <div className={styles.worldViewport} role="tabpanel">
+          <div
+            id={viewportPanelId}
+            className={styles.worldViewport}
+            role="tabpanel"
+            aria-labelledby={`${viewportTabIdPrefix}-world-model`}
+          >
             <WorldModelViewer embedded onSnapshot={handleWorldSnapshot} />
           </div>
         )}
@@ -411,6 +449,40 @@ function StructuredFailure({
       <code>{code}</code>
       <p>{description}</p>
     </div>
+  );
+}
+
+function IntentSummary({ intent }: { readonly intent: PreviewDesignIntent }) {
+  return (
+    <section className={styles.intentSummary} aria-labelledby="intent-summary-heading">
+      <div className={styles.sectionHeading}>
+        <h2 id="intent-summary-heading">Parsed DesignIntent</h2>
+        <span>Typed output</span>
+      </div>
+      <dl>
+        <div>
+          <dt>Program</dt>
+          <dd>{intent.building_type}</dd>
+        </div>
+        <div>
+          <dt>Target area</dt>
+          <dd>{intent.area.toFixed(1)} m²</dd>
+        </div>
+        <div>
+          <dt>Orientation</dt>
+          <dd>{intent.orientation ?? "not specified"}</dd>
+        </div>
+        <div>
+          <dt>Constraints</dt>
+          <dd>{intent.spatial_constraints?.length ?? 0}</dd>
+        </div>
+      </dl>
+      <p>{intent.rooms.map(roomLabel).join(" · ")}</p>
+      <details className={styles.intentJson}>
+        <summary>View DesignIntent JSON</summary>
+        <pre>{JSON.stringify(intent, null, 2)}</pre>
+      </details>
+    </section>
   );
 }
 
@@ -573,7 +645,11 @@ function EvidenceRail({
       <div className={styles.evidenceLead}>
         <p className={styles.kicker}>Execution evidence</p>
         <strong>{inputFailure ?? activeScenario?.failure?.code ?? "CP-SAT · deterministic"}</strong>
-        <span>{scenario ? scenario.proposal.strategy : "No geometry result"}</span>
+        <span>
+          {scenario
+            ? `${scenario.proposal.strategy} · ${scenario.proposal.spatial_constraints.length} constraints`
+            : "No geometry result"}
+        </span>
       </div>
       <div className={styles.metricStrip}>
         {metricItems.map(([label, value]) => (
@@ -607,4 +683,3 @@ function EvidenceRail({
     </>
   );
 }
-

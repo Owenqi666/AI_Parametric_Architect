@@ -144,7 +144,7 @@ describe("Benchmark Lab evidence presentation", () => {
     expect(screen.getByText(/report data contains no proposal geometry/i)).toBeInTheDocument();
     expect(screen.getByRole("table", { name: /Text equivalent/ })).toBeInTheDocument();
     expect(screen.getAllByText(/16\/16 covered/).length).toBeGreaterThan(0);
-    expect(screen.queryByText("OpenAI-backed evidence is present.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Report declares OpenAI Responses evidence.")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("tab", { name: /Oracle intent/ }));
     expect(screen.getAllByText(/N\/A · NO_RUNTIME_SAMPLES/).length).toBeGreaterThan(0);
@@ -162,8 +162,8 @@ describe("Benchmark Lab evidence presentation", () => {
 
     render(<BenchmarkReportView report={report} sourceLabel="test fixture" />);
 
-    expect(screen.getByText("OpenAI-backed evidence is present.")).toBeInTheDocument();
-    expect(screen.getByText(/marked real nondeterministic/)).toBeInTheDocument();
+    expect(screen.getByText("Report declares OpenAI Responses evidence.")).toBeInTheDocument();
+    expect(screen.getByText(/marks .* as real nondeterministic/)).toBeInTheDocument();
   });
 
   it("loads the bundled same-origin report and exposes local JSON import", async () => {

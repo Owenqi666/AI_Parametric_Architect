@@ -306,7 +306,8 @@
 }
 
 .evidenceWarning,
-.networkNotice {
+.networkNotice,
+.trackNotice {
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr);
   gap: 22px;
@@ -321,7 +322,8 @@
 }
 
 .evidenceWarning strong,
-.networkNotice strong {
+.networkNotice strong,
+.trackNotice strong {
   color: #ffd68d;
 }
 
@@ -333,6 +335,16 @@
 
 .networkNotice strong {
   color: var(--lab-accent);
+}
+
+.trackNotice {
+  border-color: rgba(120, 169, 255, 0.28);
+  border-left-color: #78a9ff;
+  background: rgba(120, 169, 255, 0.06);
+}
+
+.trackNotice strong {
+  color: #b8d0ff;
 }
 
 .trackTabs {
@@ -745,7 +757,8 @@
   .metricGrid,
   .trackTabs,
   .evidenceWarning,
-  .networkNotice {
+  .networkNotice,
+  .trackNotice {
     grid-template-columns: 1fr;
   }
 

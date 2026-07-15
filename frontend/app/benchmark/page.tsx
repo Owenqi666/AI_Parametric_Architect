@@ -4,7 +4,7 @@ import { ProductShell } from "../components/product-shell";
 import { BenchmarkLab } from "./benchmark-lab";
 
 export const metadata: Metadata = {
-  title: "Benchmark Lab | AI Parametric Architect",
+  title: "Benchmark Lab",
   description: "Offline planning benchmark evidence for AI Parametric Architect.",
 };
 

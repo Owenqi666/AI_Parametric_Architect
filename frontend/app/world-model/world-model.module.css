@@ -27,7 +27,7 @@
 .kicker {
   margin: 0 0 5px;
   color: var(--text-tertiary);
-  font: 720 9px/1.2 var(--font-mono);
+  font: 720 10px/1.3 var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -100,13 +100,13 @@
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   background: color-mix(in srgb, var(--surface-sunken) 70%, transparent);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .entityTree section > h2 small {
-  font: 600 9px/1 var(--font-mono);
+  font: 600 10px/1 var(--font-mono);
 }
 
 .entityTree ul {
@@ -170,7 +170,7 @@
 
 .entityTree button strong { font-size: 11px; }
 .entityTree button small,
-.entityTree button > b { color: var(--text-tertiary); font: 550 8px/1.2 var(--font-mono); }
+.entityTree button > b { color: var(--text-tertiary); font: 550 10px/1.3 var(--font-mono); }
 .entityTree button > b { max-width: 70px; overflow: hidden; text-overflow: ellipsis; }
 .emptyTree { padding: 26px 18px; color: var(--text-secondary); font-size: 11px; text-align: center; }
 
@@ -194,13 +194,13 @@
   align-items: center;
   gap: 9px;
   color: #a8b0b1;
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .viewportTitle code {
   padding-left: 9px;
   border-left: 1px solid rgba(255,255,255,.15);
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .authorityPill {
@@ -257,8 +257,8 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.inspectorSection dt { color: var(--text-tertiary); font-size: 9px; }
-.inspectorSection dd { min-width: 0; margin: 0; overflow-wrap: anywhere; font: 600 9px/1.35 var(--font-mono); }
+.inspectorSection dt { color: var(--text-tertiary); font-size: 10px; }
+.inspectorSection dd { min-width: 0; margin: 0; overflow-wrap: anywhere; font: 600 10px/1.4 var(--font-mono); }
 
 .artifactSection {
   display: grid;
@@ -279,7 +279,7 @@
   color: var(--text-secondary);
   background: var(--surface-sunken);
   cursor: pointer;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   text-align: center;
   text-decoration: none;
@@ -301,7 +301,7 @@
 .jsonDisclosure pre { max-height: 240px; overflow: auto; margin: 0; padding: 9px; border-radius: 7px; background: var(--surface-sunken); font: 8px/1.5 var(--font-mono); white-space: pre-wrap; }
 
 @media (max-width: 1120px) {
-  .explorer { grid-template-columns: 250px minmax(0, 1fr); grid-template-rows: minmax(620px, calc(100dvh - 112px)) auto; }
+  .explorer { height: auto; min-height: 100%; grid-template-columns: 250px minmax(0, 1fr); grid-template-rows: minmax(620px, calc(100dvh - 112px)) auto; }
   .inspector { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; border-top: 1px solid var(--border-subtle); border-left: 0; }
   .identityCard, .inspectorSection, .artifactSection { margin-top: 0; }
   .svgPreview, .jsonDisclosure { grid-column: 1 / -1; }

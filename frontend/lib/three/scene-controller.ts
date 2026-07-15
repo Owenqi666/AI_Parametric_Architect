@@ -19,6 +19,7 @@ export class SceneController {
   private readonly onContextFailure: (() => void) | undefined;
   private selectionHelper: THREE.Box3Helper | null = null;
   private pointerDown: readonly [number, number] | null = null;
+  private currentView: "isometric" | "top" = "isometric";
   private disposed = false;
 
   constructor(
@@ -36,7 +37,7 @@ export class SceneController {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.camera.up.set(0, 0, 1);
     this.built = buildWorldScene(renderIr);
     this.scene.add(this.built.root);
@@ -78,7 +79,7 @@ export class SceneController {
   setFloor(floorId: string | null): void {
     for (const [id, group] of this.built.floorGroups) group.visible = floorId === null || id === floorId;
     this.clearSelection();
-    this.fit("isometric", true);
+    this.fit(this.currentView, true);
   }
 
   selectEntity(entityId: string | null): void {
@@ -102,11 +103,17 @@ export class SceneController {
   }
 
   viewIsometric(): void {
+    this.currentView = "isometric";
     this.fit("isometric", true);
   }
 
   viewTop(): void {
+    this.currentView = "top";
     this.fit("top", true);
+  }
+
+  fitVisible(): void {
+    this.fit(this.currentView, true);
   }
 
   dispose(): void {

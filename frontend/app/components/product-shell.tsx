@@ -53,11 +53,11 @@ export function ProductShell({ active, children, density = "workspace" }: Produc
           ))}
         </nav>
 
-        <div className={styles.systemStatus} aria-label="Showcase execution status">
+        <div className={styles.systemStatus} aria-label="Showcase data posture">
           <i aria-hidden="true" />
           <span>
-            <strong>Offline ready</strong>
-            <small>Deterministic showcase</small>
+            <strong>Offline mode</strong>
+            <small>Bundled evidence</small>
           </span>
         </div>
       </header>
@@ -67,4 +67,3 @@ export function ProductShell({ active, children, density = "workspace" }: Produc
     </div>
   );
 }
-

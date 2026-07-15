@@ -21,13 +21,6 @@ beforeEach(() => {
           headers: { "content-type": "application/json", "content-length": String(showcaseText.length) },
         });
       }
-      if (url.includes("/v1/capabilities")) {
-        return Response.json({
-          openai_requirement_parser_available: false,
-          benchmark_live_mode_available: false,
-          live_planning_preview_available: false,
-        });
-      }
       return new Response(null, { status: 404 });
     }),
   );
@@ -48,6 +41,7 @@ describe("Design Studio", () => {
     expect(within(viewport).getByText("Not committed to World Model")).toBeInTheDocument();
     expect(within(viewport).getByText("Advisory planning output")).toBeInTheDocument();
     expect(screen.getByText("Recorded deterministic showcase")).toBeInTheDocument();
+    expect(screen.getByText(/No provider or solver executes in the browser/)).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: /OpenAI live/ })).not.toBeInTheDocument();
   });
 
@@ -59,12 +53,19 @@ describe("Design Studio", () => {
     expect(within(pipeline).getByText("Observable pipeline")).toBeInTheDocument();
     expect(within(pipeline).getByText("No hidden reasoning")).toBeInTheDocument();
     expect(within(pipeline).getByText("Constraint Planning")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Parsed DesignIntent" })).toBeInTheDocument();
+    expect(screen.getByText("120.0 m²")).toBeInTheDocument();
+    expect(screen.getByText(/cp-sat-rectilinear-v1 · 1 constraints/)).toBeInTheDocument();
     expect(screen.getByText("No write authority")).toBeInTheDocument();
 
     const roomButtons = screen.getAllByRole("button", { name: /square metres/ });
     fireEvent.click(roomButtons[0]!);
     expect(screen.getByText("Solved placement")).toBeInTheDocument();
     expect(screen.getByText("Advisory only")).toBeInTheDocument();
+
+    const proposalTab = screen.getByRole("tab", { name: "Proposal" });
+    fireEvent.keyDown(proposalTab, { key: "ArrowRight" });
+    expect(screen.getByRole("tab", { name: "World Model" })).toHaveAttribute("aria-selected", "true");
   });
 
   it("fails closed when requirement text leaves the curated replay", async () => {
@@ -77,5 +78,28 @@ describe("Design Studio", () => {
       expect(screen.getAllByText("SHOWCASE_INPUT_NOT_RECORDED")).toHaveLength(2);
     });
     expect(screen.getByText("No recorded output for edited input")).toBeInTheDocument();
+  });
+
+  it("keeps the parsed conflicting intent and marks planning as failed", async () => {
+    render(<DesignStudioClient />);
+    const scenario = await screen.findByRole("combobox", { name: "Showcase scenario" });
+    fireEvent.change(scenario, { target: { value: "constraint-conflict" } });
+
+    const pipeline = screen.getByRole("complementary", { name: "Planning input and execution pipeline" });
+    expect(within(pipeline).getByText("Requirement").closest("li")).toHaveAttribute("data-status", "succeeded");
+    expect(within(pipeline).getByText("Design Intent").closest("li")).toHaveAttribute("data-status", "succeeded");
+    expect(within(pipeline).getByText("Constraint Planning").closest("li")).toHaveAttribute("data-status", "failed");
+    expect(screen.getByText("40.0 m²")).toBeInTheDocument();
+    expect(screen.getAllByText("PLANNING_SOLVER_FAILED")).toHaveLength(2);
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Execution mode" }), {
+      target: { value: "offline" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Run planning" }));
+    await waitFor(() => {
+      expect(within(pipeline).getByText("Constraint Planning").closest("li"))
+        .toHaveAttribute("data-status", "failed");
+    });
+    expect(screen.getByText("Constraint planning failed closed")).toBeInTheDocument();
   });
 });

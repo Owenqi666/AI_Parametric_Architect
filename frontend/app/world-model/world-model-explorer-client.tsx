@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import type { RenderObject } from "@/lib/render-ir/types";
 import { WorldModelViewer, type WorldModelViewSnapshot } from "../viewer-client";
@@ -24,7 +24,11 @@ const ENTITY_LABELS: Readonly<Record<RenderObject["entity_type"], string>> = {
 export function WorldModelExplorerClient() {
   const [snapshot, setSnapshot] = useState<WorldModelViewSnapshot>(EMPTY_SNAPSHOT);
   const [query, setQuery] = useState("");
-  const [selectionRequest, setSelectionRequest] = useState<string | null>(null);
+  const [selectionRequest, setSelectionRequest] = useState<{
+    readonly entityId: string;
+    readonly requestId: number;
+  } | null>(null);
+  const selectionSequence = useRef(0);
   const [svgOpen, setSvgOpen] = useState(false);
 
   const handleSnapshot = useCallback((next: WorldModelViewSnapshot) => {
@@ -91,7 +95,13 @@ export function WorldModelExplorerClient() {
                         type="button"
                         data-selected={selected?.entity_id === item.entity_id}
                         aria-pressed={selected?.entity_id === item.entity_id}
-                        onClick={() => setSelectionRequest(item.entity_id)}
+                        onClick={() => {
+                          selectionSequence.current += 1;
+                          setSelectionRequest({
+                            entityId: item.entity_id,
+                            requestId: selectionSequence.current,
+                          });
+                        }}
                       >
                         <i data-type={item.entity_type} aria-hidden="true" />
                         <span>

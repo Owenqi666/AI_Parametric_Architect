@@ -83,7 +83,7 @@ export function BenchmarkLab() {
   }, []);
 
   return (
-    <main className={styles.lab}>
+    <div className={styles.lab}>
       <header className={styles.labHeader}>
         <div className={styles.reportContext}>
           <span aria-hidden="true">BR</span>
@@ -159,6 +159,6 @@ export function BenchmarkLab() {
           <BenchmarkReportView report={state.report} sourceLabel={state.sourceLabel} />
         ) : null}
       </div>
-    </main>
+    </div>
   );
 }
