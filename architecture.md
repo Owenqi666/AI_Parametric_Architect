@@ -6,6 +6,7 @@ The deterministic core proves two paths:
 
 ```text
 JSON document -> structural validation -> semantic/geometry validation -> SVG
+validated JSON World Model -> immutable Render IR 1.0.0 -> strict frontend admission -> read-only Three.js scene
 JSON revision -> patch a copy -> validate -> compare-and-swap commit -> audit
 requirement JSON -> intent schema + semantics -> immutable DesignIntent
 DesignIntent -> PlanningRules + CP-SAT -> detached spatial FloorPlanProposal -> semantic PatchProposal
@@ -16,8 +17,9 @@ observable JSON boundaries -> tenant/domain HMAC + safe metadata -> AgentTrace
 ```
 
 The current agent-evolution milestone provides a provider-neutral LLM contract and a
-deterministic Mock, but does not connect a network LLM or vendor SDK. It also does not
-perform automatic geometry correction or implement DXF, Three.js, or IFC export.
+deterministic Mock, but does not connect a network LLM or vendor SDK. Final Enhancement
+Priority 1 adds read-only Three.js visualization; it does not add World Model editing,
+proposal realization, automatic geometry correction, DXF, or IFC export.
 
 ## Architectural style
 
@@ -38,6 +40,8 @@ typed I/O  proposal   symbolic   authorize    adapter       rules     adapters  
 typed LLM adapters          detached evaluation
 
 agent_trace observes typed JSON boundaries by hash only; it is not in the write path
+
+validated rendering path: renderer adapter -> Render IR -> frontend Three.js adapter
 ```
 
 Dependency rules:
@@ -67,6 +71,13 @@ Dependency rules:
 13. Agent traces retain tenant/domain-separated keyed digests and allowlisted metadata
     only; prompts, content, tool arguments/results, rationale, and chain-of-thought are
     prohibited. Trace fingerprints provide correlation, not anonymization.
+14. Render IR is projected only after complete validation of an authoritative
+    `ModelDocument`; it is never a repository snapshot, Patch input, or commit credential.
+15. Three.js is confined to `frontend/`. Neutral Python domain and renderer code do not
+    depend on it, and the frontend has no editing, authorization, repository, or commit client.
+16. Planner, solver, and evaluation output cannot enter Render IR as authoritative geometry.
+    A detached proposal must first pass a separately authorized realization, complete
+    validation, and CAS commit before the committed JSON can be projected.
 
 ## JSON model strategy
 
@@ -105,7 +116,7 @@ transport/library input
   -> ModelComplexityPolicy
   -> semantic/reference rules
   -> finite Shapely-derived predicates
-  -> deterministic derived output
+  -> deterministic SVG or Render IR output
 ```
 
 The JSON guard rejects non-standard numbers, non-JSON Python values, cycles, shared
@@ -115,6 +126,21 @@ magnitude, room area, wall length, and Patch operation count. HTTP request size 
 also bounded in the transport adapter. These controls keep the accepted work set
 finite and predictable; gateway rate limits, deadlines, concurrency quotas, and
 process resource limits remain deployment responsibilities.
+
+The browser applies a second read-only admission boundary:
+
+```text
+same-origin Render IR JSON
+  -> 2 MiB response cap
+  -> exact version and field parser
+  -> finite values + reference checks + count/point budgets
+  -> deeply frozen Render IR
+  -> hard-coded Three.js scene mapping
+```
+
+This parser does not accept World Model JSON or planner proposals. Scene materials,
+textures, colors, and shaders are local implementation choices rather than data-driven
+capabilities supplied by the IR.
 
 Revision initialization takes ownership before validation:
 
@@ -150,7 +176,7 @@ remain stored only as explicitly untrusted diagnostics.
 | Module | Responsibility | Must not do |
 | --- | --- | --- |
 | `contracts` | Load and apply the versioned JSON Schema | Repair or reinterpret geometry |
-| `domain` | Neutral issue/result types and model vocabulary | Import infrastructure libraries |
+| `domain` | Neutral issue/result types, model vocabulary, and immutable Render IR values | Import infrastructure libraries, FastAPI, or Three.js |
 | `intent` | Load/validate Design Intent Schema and expose neutral intent models | Persist geometry or import LLM clients |
 | `agents` | Provide typed requirement, planning, reasoning, and patch-generation boundaries | Access repositories or mutate world state |
 | `llm` | Define typed prompts/providers and adapt them to proposal-only Agent ports | Import vendor SDKs, access repositories, mutate, validate, or commit models |
@@ -162,12 +188,13 @@ remain stored only as explicitly untrusted diagnostics.
 | `editing` | Strict RFC 6901 pointers and atomic add/remove/replace operations | Commit or validate models |
 | `geometry_engine` | Build transient geometry and calculate predicates | Persist Shapely objects |
 | `validation` | Run independently testable L1-L4 rules | Mutate the model |
-| `renderer` | Produce deterministic derived outputs | Invent missing model data |
+| `renderer` | Project validated models into deterministic SVG or Render IR | Invent, persist, or commit geometry |
 | `application` | Orchestrate validation, rendering, patch, and restoration use cases | Contain transport logic |
 | `backend` | FastAPI transport adapter | Contain validation rules |
-| `ports` | Define clock, patch, planning, export, and revision boundaries | Implement vendor behavior |
+| `ports` | Define clock, patch, planning, rendering/projecting, export, and revision boundaries | Implement vendor behavior |
 | `repositories` | Store immutable revisions, history stacks, and audit events | Skip CAS or validation orchestration |
 | `infrastructure` | Provide small production adapters such as the UTC clock | Own domain policy |
+| `frontend` | Admit versioned Render IR, build/dispose Three.js resources, and provide read-only interaction | Read raw World Model JSON, generate Patch operations, access revisions, authorize, or commit |
 
 ## Validation levels
 
@@ -179,6 +206,40 @@ remain stored only as explicitly untrusted diagnostics.
 Issues have stable machine-readable codes, severity, JSON Pointer path, involved
 entity IDs, human-readable message, and optional details. Renderers reject models
 with error-level issues.
+
+## Three.js visualization boundary: Final Enhancement Priority 1
+
+The visualization path is a one-way projection:
+
+```text
+authoritative JSON ModelDocument
+  -> StrictJsonTreeGuard
+  -> Schema + complexity + semantic + geometry validation
+  -> WorldModelRenderIRProjector
+  -> immutable RenderIR 1.0.0
+  -> JSON transport or synchronized static fixture
+  -> frontend exact parser
+  -> read-only Three.js scene
+```
+
+`ArchitectService.render_ir` performs full validation before invoking the projector.
+`POST /v1/models/render/ir` exposes the same boundary and returns the existing structured
+validation report, plus stable floor-not-found and no-renderable-geometry errors. The
+projector depends on neutral domain, geometry, and rendering ports; it preserves stable
+floor/entity ordering, source revision identity, metres/degrees, and the model-native
+right-handed Z-up frame.
+
+Render IR contains bounds, floors, and explicit room surface, wall extrusion, and
+door/window panel objects with stable entity IDs. It is a fresh standard-JSON derivative,
+not a second World Model. The viewer provides camera control, floor visibility,
+selection, and inspection only. Names remain untrusted display strings and are inserted
+as React text; the IR cannot provide HTML, URLs, textures, materials, colors, or shaders.
+
+Scene teardown stops the animation loop, removes listeners, disconnects the
+`ResizeObserver`, disposes controls, geometry, materials, textures, renderer lists, and
+the renderer, and releases the WebGL context. Render IR v1 deliberately omits stairs and
+represents openings as visible panels without wall CSG. Those display limitations do not
+change or reinterpret authoritative geometry.
 
 ## Incremental editing boundary
 
@@ -376,6 +437,12 @@ allowlist and continues to reject geometry operations. Consequently a planning c
 does not copy solver rectangles into World Model geometry, and the source intent's
 area, orientation, building type, and spatial relations remain explicitly unverified
 in the persisted planning record.
+
+`WorldModelRenderIRProjector` accepts an authoritative `ModelDocument`, never a
+`FloorPlanProposal`. A solver placement therefore cannot appear as committed Three.js
+geometry merely because it can be evaluated. It must first pass a separately authorized
+realization, complete Validation, and CAS Commit; the existing geometry authorization
+allowlist remains unchanged.
 
 Promoting a selected placement into authoritative geometry is a later capability. It
 will require a new typed realization contract and authorization review, followed by
@@ -599,8 +666,16 @@ sets remain mapping metadata, never an alternative geometry source.
 - Unit tests cover every geometry predicate and validation issue code.
 - Renderer tests parse XML and test determinism rather than relying on a large
   brittle snapshot.
+- Render IR value/projector tests cover immutability, deterministic order, Z-up
+  coordinates, bounds, floor filtering, finite derived values, and input non-mutation.
+- Render IR API tests cover the complete validation gate and structured floor/no-geometry
+  errors; a golden integration test keeps the frontend fixture equal to projector output.
+- Frontend tests cover exact contract admission, reference and resource-budget rejection,
+  scene mapping, untrusted names as text, same-origin loading, and deduplicated resource
+  disposal.
 - Integration tests execute example JSON through validation and SVG rendering.
-- Architecture tests guard forbidden dependency directions.
+- Architecture tests guard forbidden dependency directions, confine Three.js to the
+  frontend, and prevent protected layers from depending on Render IR.
 - Patch tests cover JSON Pointer escapes, object/array semantics, failure atomicity,
   revision conflicts, JSON-only state, compensating undo/redo, and audit ordering.
 - Intent contract tests cover both room representations, packaged Schema resources,

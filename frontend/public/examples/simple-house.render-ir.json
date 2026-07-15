@@ -1,0 +1,275 @@
+{
+  "render_ir_version": "1.0.0",
+  "source_model": {
+    "schema_version": "1.0.0",
+    "model_id": "mdl_simple_house",
+    "revision": 0,
+    "root_building_id": "bld_simple_house"
+  },
+  "units": {
+    "length": "m",
+    "angle": "degree"
+  },
+  "coordinate_system": {
+    "type": "local_cartesian",
+    "handedness": "right",
+    "up_axis": "Z",
+    "origin": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "bounds": {
+    "min": [
+      -0.1,
+      -0.1,
+      0.0
+    ],
+    "max": [
+      8.1,
+      6.1,
+      2.8
+    ]
+  },
+  "floors": [
+    {
+      "entity_id": "flr_ground",
+      "entity_type": "floor",
+      "name": "Ground Floor",
+      "elevation": 0.0,
+      "height": 2.8
+    }
+  ],
+  "objects": [
+    {
+      "entity_id": "rom_living",
+      "entity_type": "room",
+      "floor_id": "flr_ground",
+      "name": "Living Room",
+      "geometry": {
+        "kind": "polygon_surface",
+        "exterior": [
+          [
+            0.1,
+            0.1,
+            0.0
+          ],
+          [
+            7.9,
+            0.1,
+            0.0
+          ],
+          [
+            7.9,
+            5.9,
+            0.0
+          ],
+          [
+            0.1,
+            5.9,
+            0.0
+          ],
+          [
+            0.1,
+            0.1,
+            0.0
+          ]
+        ],
+        "holes": []
+      }
+    },
+    {
+      "entity_id": "wal_east",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "name": "East Wall",
+      "geometry": {
+        "kind": "vertical_extrusion",
+        "footprint": [
+          [
+            7.9,
+            0.0,
+            0.0
+          ],
+          [
+            7.9,
+            6.0,
+            0.0
+          ],
+          [
+            8.1,
+            6.0,
+            0.0
+          ],
+          [
+            8.1,
+            0.0,
+            0.0
+          ],
+          [
+            7.9,
+            0.0,
+            0.0
+          ]
+        ],
+        "height": 2.8
+      }
+    },
+    {
+      "entity_id": "wal_north",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "name": "North Wall",
+      "geometry": {
+        "kind": "vertical_extrusion",
+        "footprint": [
+          [
+            8.0,
+            5.9,
+            0.0
+          ],
+          [
+            0.0,
+            5.9,
+            0.0
+          ],
+          [
+            0.0,
+            6.1,
+            0.0
+          ],
+          [
+            8.0,
+            6.1,
+            0.0
+          ],
+          [
+            8.0,
+            5.9,
+            0.0
+          ]
+        ],
+        "height": 2.8
+      }
+    },
+    {
+      "entity_id": "wal_south",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "name": "South Wall",
+      "geometry": {
+        "kind": "vertical_extrusion",
+        "footprint": [
+          [
+            0.0,
+            0.1,
+            0.0
+          ],
+          [
+            8.0,
+            0.1,
+            0.0
+          ],
+          [
+            8.0,
+            -0.1,
+            0.0
+          ],
+          [
+            0.0,
+            -0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.0
+          ]
+        ],
+        "height": 2.8
+      }
+    },
+    {
+      "entity_id": "wal_west",
+      "entity_type": "wall",
+      "floor_id": "flr_ground",
+      "name": "West Wall",
+      "geometry": {
+        "kind": "vertical_extrusion",
+        "footprint": [
+          [
+            0.1,
+            6.0,
+            0.0
+          ],
+          [
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            -0.1,
+            0.0,
+            0.0
+          ],
+          [
+            -0.1,
+            6.0,
+            0.0
+          ],
+          [
+            0.1,
+            6.0,
+            0.0
+          ]
+        ],
+        "height": 2.8
+      }
+    },
+    {
+      "entity_id": "dor_entry",
+      "entity_type": "door",
+      "floor_id": "flr_ground",
+      "name": "Entry Door",
+      "host_wall_id": "wal_south",
+      "geometry": {
+        "kind": "opening_panel",
+        "start": [
+          1.05,
+          0.0,
+          0.0
+        ],
+        "end": [
+          1.95,
+          0.0,
+          0.0
+        ],
+        "height": 2.1,
+        "thickness": 0.2
+      }
+    },
+    {
+      "entity_id": "win_south",
+      "entity_type": "window",
+      "floor_id": "flr_ground",
+      "name": "South Window",
+      "host_wall_id": "wal_south",
+      "geometry": {
+        "kind": "opening_panel",
+        "start": [
+          4.1,
+          0.0,
+          0.9
+        ],
+        "end": [
+          5.9,
+          0.0,
+          0.9
+        ],
+        "height": 1.2,
+        "thickness": 0.2
+      }
+    }
+  ]
+}

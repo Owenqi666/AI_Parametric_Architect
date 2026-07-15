@@ -100,6 +100,31 @@ def create_app(
             )
         return Response(content=svg, media_type="image/svg+xml")
 
+    @app.post("/v1/models/render/ir")
+    def render_ir(
+        model: Annotated[dict[str, Any], Body()],
+        floor_id: Annotated[str | None, Query()] = None,
+    ) -> JSONResponse:
+        json_issue = strict_json.issue(model)
+        if json_issue is not None:
+            report = ValidationReport.create(model, (json_issue,))
+            return JSONResponse(status_code=422, content=report.to_dict())
+        try:
+            render_document = application.render_ir(model, floor_id)
+        except ModelValidationError as exc:
+            return JSONResponse(status_code=422, content=exc.report.to_dict())
+        except FloorNotFoundError as exc:
+            return JSONResponse(
+                status_code=422,
+                content=_transport_error("RENDER_FLOOR_NOT_FOUND", str(exc), "/floor_id"),
+            )
+        except NoRenderableGeometryError as exc:
+            return JSONResponse(
+                status_code=422,
+                content=_transport_error("RENDER_NO_GEOMETRY", str(exc), "/entities"),
+            )
+        return JSONResponse(content=render_document.to_dict())
+
     return app
 
 

@@ -31,7 +31,7 @@ from ai_parametric_architect.planning import (
 from ai_parametric_architect.policy import ArchitecturePlanningAuthorizationPolicy
 from ai_parametric_architect.ports import RevisionRepository
 from ai_parametric_architect.reasoning import RuleBasedConstraintSolver
-from ai_parametric_architect.renderer import SvgRenderer
+from ai_parametric_architect.renderer import SvgRenderer, WorldModelRenderIRProjector
 from ai_parametric_architect.repositories import InMemoryRevisionRepository
 from ai_parametric_architect.validation import ModelValidator
 
@@ -46,7 +46,11 @@ def create_service() -> ArchitectService:
         complexity_policy=complexity_policy,
     )
     renderer = SvgRenderer(geometry)
-    return ArchitectService(validator, renderer)
+    return ArchitectService(
+        validator,
+        renderer,
+        render_ir_projector=WorldModelRenderIRProjector(geometry),
+    )
 
 
 def create_editing_service(

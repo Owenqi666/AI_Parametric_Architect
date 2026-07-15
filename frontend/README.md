@@ -1,5 +1,26 @@
-# Frontend
+# Three.js World Model Viewer
 
-The Three.js client begins after the validated JSON and rendering contracts are
-stable. It will consume the same JSON model and must not maintain separate geometry.
+The viewer consumes only versioned Render IR produced from a validated JSON
+World Model. It does not parse, edit, patch, or persist authoritative model
+documents.
 
+## Development
+
+```bash
+npm ci
+npm run dev
+```
+
+The bundled demonstration loads
+`/examples/simple-house.render-ir.json`, a deterministic derivative of
+`../examples/valid_simple_house.json`. Python tests keep that fixture synchronized
+with the backend projector.
+
+## Quality gates
+
+```bash
+npm run typecheck
+npm run lint
+npm test
+npm run build
+```

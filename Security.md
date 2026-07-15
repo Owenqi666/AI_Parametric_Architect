@@ -7,9 +7,9 @@ the prototype and the controls a production deployment must add around them.
 ## Assets and trust boundaries
 
 The authoritative asset is an immutable revision of the JSON world model. Plans,
-LLM responses, evaluation reports, traces, Shapely objects, and rendered SVG are
-derived or advisory values; none of them is an authority to mutate or commit the
-world model.
+LLM responses, solver proposals, evaluation reports, traces, Shapely objects, rendered
+SVG, Render IR, and Three.js scenes are derived or advisory values; none of them is an
+authority to mutate or commit the world model.
 
 The main untrusted inputs are:
 
@@ -17,7 +17,9 @@ The main untrusted inputs are:
 - patch operations and proposal metadata produced by people or agents;
 - natural-language requirements and LLM suggestions;
 - proposal `provenance` and `rationale` strings;
-- scenario data supplied to the evaluation runner.
+- scenario data supplied to the evaluation runner;
+- Render IR JSON loaded by the browser;
+- floor and entity names rendered as display text.
 
 Authenticated application context, including `TrustedAuditIdentity` and tenant HMAC
 keys, must be supplied by trusted infrastructure. It must never be reconstructed from
@@ -40,6 +42,10 @@ PatchProposal (untrusted)
 Agents and LLM providers have no repository, patch-application, validation-bypass, or
 commit capability. An evaluation success is an observation only and is deliberately
 not accepted by the authorization gateway as a commit credential.
+
+Visualization is entirely on the read side. Render IR, scene selection, camera/floor
+visibility, and WebGL state are not `AgentPatchCommitRequest` values and cannot enter the
+authorization gateway or revision repository.
 
 ## Strict JSON boundary
 
@@ -76,6 +82,35 @@ Resource budgets reduce denial-of-service risk; they do not replace infrastructu
 controls such as reverse-proxy body limits, request timeouts, concurrency limits,
 process isolation, and memory/CPU quotas.
 
+## Visualization boundary
+
+The server projects Render IR only after the input passes strict JSON admission, JSON
+Schema, complexity, semantic/reference, and geometry validation. `RenderIR 1.0.0`
+retains source model/revision identity and returns a fresh standard-JSON tree, but it is
+not a revision snapshot, Patch input, authorization result, or commit credential. The
+projector independently refuses non-finite direct and derived coordinates.
+
+The browser treats Render IR as untrusted data and applies the following controls:
+
+- only same-origin sources are accepted, including after redirects, and fetch uses
+  `credentials: "same-origin"`;
+- declared and streamed response data is capped at 2 MiB;
+- version, fields, literals, finite numbers, closed/horizontal rings, bounds, floor
+  references, and opening-to-host-wall references are checked exactly;
+- admission is capped at 128 floors, 10,000 render objects, and 100,000 geometry points;
+- the admitted value is deeply frozen before scene construction;
+- Render IR has no URL, texture, material, color, shader, or executable-content field;
+  Three.js appearance is hard-coded locally;
+- untrusted names remain unchanged strings and are inserted through React text nodes,
+  never HTML injection APIs;
+- device pixel ratio is capped at 2 to bound render-target growth.
+
+The viewer has no raw World Model, Patch, authorization, repository, or commit client.
+Teardown stops the animation loop, removes DOM listeners, disconnects the
+`ResizeObserver`, disposes controls, geometries, materials, textures, renderer lists,
+and the renderer, then releases the WebGL context. These controls limit accidental
+resource retention but do not make a browser GPU process a trusted execution boundary.
+
 ## Constraint-solver boundary
 
 Phase 7 Task 7.1 adds OR-Tools CP-SAT only inside `planning/solver`. Solver output is
@@ -83,6 +118,11 @@ an advisory `FloorPlanProposal v2`, never authoritative World Model geometry and
 a commit credential. The solver has no repository, Patch, application, authorization,
 validation, FastAPI, LLM, Shapely, renderer, or revision dependency. OR-Tools values do
 not cross this boundary.
+
+CP-SAT output cannot directly supply authoritative Render IR or Three.js geometry. The
+visualization projector accepts only a World Model document; solver placement remains a
+detached Proposal until a separately authorized realization passes complete validation
+and CAS commit. The existing geometry authorization allowlist has not been widened.
 
 `PlanningRules` and `PlanningGridPolicy` centralize solver safety limits and scaling:
 
@@ -204,9 +244,16 @@ Before exposing the prototype to untrusted internet traffic, a deployment must a
 - managed HMAC key generation, storage, rotation, revocation, and deletion;
 - request-body, rate, timeout, concurrency, CPU, and memory enforcement;
 - native solver isolation, cancellation, dependency scanning, and platform-compatible wheels;
+- browser CSP/security headers, static-asset integrity controls, and WebGL/GPU resource isolation;
 - TLS, security headers, dependency and container scanning, and incident monitoring;
 - a persistence migration and recovery strategy;
 - threat-model review of any future network LLM provider and its data-retention terms.
+
+The same-origin client check does not replace server-side authentication, authorization,
+CSP, or resource quotas, and the current viewer does not make `/v1/models/render/ir`
+safe for public internet exposure. Render IR v1 omits stairs and represents door/window
+openings as panels without CSG; consumers must not infer that an undisplayed stair is
+absent from the World Model or that a wall has been authoritatively cut.
 
 Do not connect a real LLM, broaden an authorization allowlist, or add a new agent write
 capability without a dedicated security review and adversarial regression tests.

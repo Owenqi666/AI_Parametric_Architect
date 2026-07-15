@@ -17,6 +17,7 @@ from ai_parametric_architect.ports.rendering import (
     NoRenderableGeometryError,
     Renderer,
     RenderError,
+    RenderIRProjector,
 )
 from ai_parametric_architect.ports.repository import RevisionRepository
 from ai_parametric_architect.ports.validation import Validator
@@ -34,6 +35,7 @@ __all__ = [
     "PatchProposalGenerator",
     "ProposalPlanner",
     "RenderError",
+    "RenderIRProjector",
     "Renderer",
     "RequirementParser",
     "RevisionRepository",

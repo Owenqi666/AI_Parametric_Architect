@@ -106,6 +106,20 @@ def test_validation_and_renderer_do_not_import_transport_or_shapely() -> None:
         _assert_layer_avoids(layer, {"fastapi", "shapely"})
 
 
+def test_renderers_cannot_reach_write_or_validation_boundaries() -> None:
+    _assert_layer_avoids(
+        "renderer",
+        {
+            "ai_parametric_architect.application",
+            "ai_parametric_architect.backend",
+            "ai_parametric_architect.editing",
+            "ai_parametric_architect.policy",
+            "ai_parametric_architect.repositories",
+            "ai_parametric_architect.validation",
+        },
+    )
+
+
 def test_editing_application_does_not_import_transport_or_geometry_backend() -> None:
     _assert_layer_avoids(
         "application",

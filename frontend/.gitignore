@@ -1,0 +1,10 @@
+/node_modules/
+/.next/
+/.vinext/
+/dist/
+/.wrangler/
+/coverage/
+/.env*
+next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*

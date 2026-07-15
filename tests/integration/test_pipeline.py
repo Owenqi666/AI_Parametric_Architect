@@ -23,6 +23,29 @@ def test_valid_document_runs_from_json_to_deterministic_svg(
     assert b'data-model-id="mdl_simple_house"' in first
 
 
+def test_valid_document_runs_from_json_to_deterministic_render_ir(
+    valid_simple_house: dict[str, Any],
+) -> None:
+    service = create_service()
+
+    first = service.render_ir(valid_simple_house).to_dict()
+    second = service.render_ir(valid_simple_house).to_dict()
+
+    assert first == second
+    assert first["source_model"] == {
+        "schema_version": "1.0.0",
+        "model_id": "mdl_simple_house",
+        "revision": 0,
+        "root_building_id": "bld_simple_house",
+    }
+    assert first["coordinate_system"] == {
+        "type": "local_cartesian",
+        "handedness": "right",
+        "up_axis": "Z",
+        "origin": [0.0, 0.0, 0.0],
+    }
+
+
 @pytest.mark.parametrize(
     ("fixture_name", "required_code"),
     [
@@ -48,6 +71,7 @@ def test_full_pipeline_is_read_only(valid_simple_house: dict[str, Any]) -> None:
 
     service.validate(valid_simple_house)
     service.render_svg(valid_simple_house)
+    service.render_ir(valid_simple_house)
 
     assert valid_simple_house == before
 

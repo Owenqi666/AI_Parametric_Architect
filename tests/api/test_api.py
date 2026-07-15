@@ -67,6 +67,31 @@ async def test_render_endpoint_returns_deterministic_svg(
     assert first.content == second.content
 
 
+async def test_render_ir_endpoint_returns_deterministic_versioned_projection(
+    client: httpx.AsyncClient, valid_simple_house: dict[str, Any]
+) -> None:
+    first = await client.post("/v1/models/render/ir", json=valid_simple_house)
+    second = await client.post("/v1/models/render/ir", json=valid_simple_house)
+
+    assert first.status_code == 200
+    assert first.headers["content-type"].startswith("application/json")
+    assert first.content == second.content
+    body = first.json()
+    assert body["render_ir_version"] == "1.0.0"
+    assert body["source_model"]["model_id"] == "mdl_simple_house"
+    assert body["coordinate_system"]["up_axis"] == "Z"
+    assert body["bounds"] == {"min": [-0.1, -0.1, 0.0], "max": [8.1, 6.1, 2.8]}
+    assert [item["entity_id"] for item in body["objects"]] == [
+        "rom_living",
+        "wal_east",
+        "wal_north",
+        "wal_south",
+        "wal_west",
+        "dor_entry",
+        "win_south",
+    ]
+
+
 async def test_render_endpoint_returns_machine_readable_validation_error(
     client: httpx.AsyncClient, invalid_opening: dict[str, Any]
 ) -> None:
@@ -80,11 +105,31 @@ async def test_render_endpoint_returns_machine_readable_validation_error(
     assert issue["severity"] == "error"
 
 
+async def test_render_ir_endpoint_uses_the_same_full_validation_boundary(
+    client: httpx.AsyncClient, invalid_opening: dict[str, Any]
+) -> None:
+    response = await client.post("/v1/models/render/ir", json=invalid_opening)
+
+    assert response.status_code == 422
+    assert any(issue["code"] == "OPENING_OUT_OF_WALL_BOUNDS" for issue in response.json()["issues"])
+
+
 async def test_render_endpoint_returns_structured_floor_error(
     client: httpx.AsyncClient, valid_simple_house: dict[str, Any]
 ) -> None:
     response = await client.post(
         "/v1/models/render/svg?floor_id=flr_missing", json=valid_simple_house
+    )
+
+    assert response.status_code == 422
+    assert response.json()["issues"][0]["code"] == "RENDER_FLOOR_NOT_FOUND"
+
+
+async def test_render_ir_endpoint_returns_structured_floor_error(
+    client: httpx.AsyncClient, valid_simple_house: dict[str, Any]
+) -> None:
+    response = await client.post(
+        "/v1/models/render/ir?floor_id=flr_missing", json=valid_simple_house
     )
 
     assert response.status_code == 422
@@ -107,6 +152,18 @@ async def test_render_endpoint_rejects_floor_without_geometry(
         valid_simple_house["entities"][registry_name] = {}
 
     response = await client.post("/v1/models/render/svg", json=valid_simple_house)
+
+    assert response.status_code == 422
+    assert response.json()["issues"][0]["code"] == "RENDER_NO_GEOMETRY"
+
+
+async def test_render_ir_endpoint_rejects_floor_without_inventing_geometry(
+    client: httpx.AsyncClient, valid_simple_house: dict[str, Any]
+) -> None:
+    for registry_name in ("rooms", "walls", "doors", "windows", "stairs"):
+        valid_simple_house["entities"][registry_name] = {}
+
+    response = await client.post("/v1/models/render/ir", json=valid_simple_house)
 
     assert response.status_code == 422
     assert response.json()["issues"][0]["code"] == "RENDER_NO_GEOMETRY"

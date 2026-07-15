@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from ai_parametric_architect.domain import ModelDocument
+from ai_parametric_architect.domain import ModelDocument, RenderIR
 
 
 class RenderError(ValueError):
@@ -23,3 +23,9 @@ class Renderer(Protocol):
     media_type: str
 
     def render(self, model: ModelDocument, floor_id: str | None = None) -> str: ...
+
+
+class RenderIRProjector(Protocol):
+    """Project validated world-model geometry into an immutable visualization value."""
+
+    def project(self, model: ModelDocument, floor_id: str | None = None) -> RenderIR: ...

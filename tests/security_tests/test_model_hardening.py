@@ -17,7 +17,7 @@ from ai_parametric_architect.domain import (
 )
 from ai_parametric_architect.editing import JsonPatchEngine
 from ai_parametric_architect.geometry_engine import ShapelyGeometryEngine
-from ai_parametric_architect.renderer import SvgRenderer
+from ai_parametric_architect.renderer import SvgRenderer, WorldModelRenderIRProjector
 from ai_parametric_architect.validation import ModelValidator
 
 PROJECT_ROOT = Path(__file__).parents[2]
@@ -69,12 +69,19 @@ def test_non_standard_json_numbers_are_structurally_rejected_by_both_api_paths(
         content=raw,
         headers={"content-type": "application/json"},
     )
+    render_ir = client.post(
+        "/v1/models/render/ir",
+        content=raw,
+        headers={"content-type": "application/json"},
+    )
 
     assert validation.status_code == 200
     assert validation.json()["valid"] is False
     assert validation.json()["issues"][0]["code"] == "JSON_TREE_INVALID"
     assert rendering.status_code == 422
     assert rendering.json()["issues"][0]["code"] == "JSON_TREE_INVALID"
+    assert render_ir.status_code == 422
+    assert render_ir.json()["issues"][0]["code"] == "JSON_TREE_INVALID"
 
 
 def test_huge_but_finite_geometry_is_rejected_before_derived_overflow() -> None:
@@ -112,6 +119,31 @@ def test_renderer_never_serializes_inf_or_nan_for_extreme_direct_input() -> None
     ordinary_svg = renderer.render(model()).lower()
     assert "inf" not in ordinary_svg
     assert "nan" not in ordinary_svg
+
+
+def test_render_ir_never_exposes_non_finite_direct_or_derived_coordinates() -> None:
+    value = model()
+    value["coordinate_system"]["origin"][2] = math.inf
+    projector = WorldModelRenderIRProjector(ShapelyGeometryEngine())
+
+    with pytest.raises(ValueError, match="finite"):
+        projector.project(value)
+
+    ordinary = json.dumps(projector.project(model()).to_dict(), allow_nan=False).lower()
+    assert "infinity" not in ordinary
+    assert "nan" not in ordinary
+
+
+def test_render_ir_names_remain_json_data_not_html_transport() -> None:
+    value = model()
+    value["entities"]["rooms"]["rom_living"]["name"] = '<img src=x onerror="alert(1)">'
+    client = TestClient(create_app(), raise_server_exceptions=False)
+
+    response = client.post("/v1/models/render/ir", json=value)
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/json")
+    assert response.json()["objects"][0]["name"] == '<img src=x onerror="alert(1)">'
 
 
 def test_oversized_entity_and_polygon_models_are_rejected_deterministically() -> None:
